@@ -2,7 +2,6 @@ package com.example.a_lab1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.function.ToIntBiFunction;
 
 public class HelloActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -51,25 +49,14 @@ public class HelloActivity extends Activity {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
-//                button1.setText("Тыкнулась");
-//                if (TblK[0] != 50) {
-//                    ++TblK[0];
-//                    textView.setTextColor(Color.rgb(red[0] += 4, green[0] -= 4, 0));
-//                }
-//                textView.setText(Integer.toString(TblK[0]));
+                add(view);
             }
         });
 
         delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                delButton.setText("Тоже тыкнулась");
-//                if (TblK[0] != 0) {
-//                    TblK[0]--;
-//                    textView.setTextColor(Color.rgb(red[0] -= 4, green[0] += 4, 0));
-//                }
-
-//                textView.setText(Integer.toString(TblK[0]));
+                remove(view);
             }
         });
 
