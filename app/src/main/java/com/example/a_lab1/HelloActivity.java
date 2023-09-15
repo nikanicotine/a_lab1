@@ -1,12 +1,16 @@
 package com.example.a_lab1;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import java.util.function.ToIntBiFunction;
 
 public class HelloActivity extends Activity {
     @Override
@@ -19,12 +23,19 @@ public class HelloActivity extends Activity {
         TextView textView = findViewById(R.id.textView);
 
         final int[] TblK = {0};
+        final int[] red = {0};
+        final int[] green = {255};
+
 
         button1.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
                 button1.setText("Тыкнулась");
-                ++TblK[0];
+                if (TblK[0] != 50){
+                    ++TblK[0];
+                    textView.setTextColor(Color.rgb(red[0]+=4,green[0]-=4,0));
+                }
                 textView.setText(Integer.toString(TblK[0]));
             }
         });
@@ -33,7 +44,11 @@ public class HelloActivity extends Activity {
             @Override
             public void onClick(View view) {
                 button2.setText("Тоже тыкнулась");
-                ++TblK[0];
+                if (TblK[0] != 0){
+                    TblK[0]--;
+                    textView.setTextColor(Color.rgb(red[0]-=4,green[0]+=4,0));
+                }
+
                 textView.setText(Integer.toString(TblK[0]));
             }
         });
