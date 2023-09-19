@@ -37,7 +37,6 @@ public class HelloActivity extends Activity {
 
         final EditText editText = (EditText) findViewById(R.id.editText);
 
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, catNames); // было
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
 
