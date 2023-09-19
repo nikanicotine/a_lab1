@@ -7,78 +7,86 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--        <TextView-->
-        <!--            android:id="@+id/textView"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:text="Привет :)"-->
-        <!--            android:textAlignment="textStart"-->
-        <!--            android:textColor="#009688"-->
-        <!--            android:textSize="48sp"-->
-        <!--            android:visibility="visible"-->
-        <!--            tools:ignore="RtlCompat" />-->
-
-        <EditText
-            android:id="@+id/editText"
-            style="@android:style/Widget.Material.Light.EditText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:autofillHints="напиши2"
-            android:hint="Имя котика" />
+            android:layout_weight="2"
+            android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/listView"
-            style="@style/Widget.AppCompat.ListView"
+            <!--        <TextView-->
+            <!--            android:id="@+id/textView"-->
+            <!--            android:layout_width="wrap_content"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_gravity="center"-->
+            <!--            android:text="Привет :)"-->
+            <!--            android:textAlignment="textStart"-->
+            <!--            android:textColor="#009688"-->
+            <!--            android:textSize="48sp"-->
+            <!--            android:visibility="visible"-->
+            <!--            tools:ignore="RtlCompat" />-->
+
+            <EditText
+                android:id="@+id/editText"
+                style="@android:style/Widget.Material.Light.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:autofillHints="напиши2"
+                android:hint="Имя котика" />
+
+            <ListView
+                android:id="@+id/listView"
+                style="@style/Widget.AppCompat.ListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:choiceMode="multipleChoice" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:choiceMode="multipleChoice"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/addButton"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:background="#FFDDDD"
-            android:text="+"
-            android:textSize="20sp" />
+            android:layout_gravity="bottom"
+            android:layout_weight="0"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp">
 
-        <Button
-            android:id="@+id/delButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:background="#FFDDDD"
-            android:text="-"
-            android:textSize="20sp"
-            app:cornerRadius="10dp"
-            app:icon="@android:drawable/ic_menu_delete"
-            app:rippleColor="#FFFFFF"
-            app:strokeColor="#BC3636" />
+            <Button
+                android:id="@+id/addButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|left"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="#FFDDDD"
+                android:text="+"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/delButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:background="#FFDDDD"
+                android:gravity="bottom|center|fill_vertical"
+                android:text="—"
+                android:textSize="20sp"
+                app:rippleColor="#FFFFFF" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
