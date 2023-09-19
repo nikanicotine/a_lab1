@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HelloActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -32,9 +33,12 @@ public class HelloActivity extends Activity {
 
         ListView listView = findViewById(R.id.listView);
 
+        Collections.addAll(catNames, "Tom", "Bob", "Sam", "Alice");
+
         final EditText editText = (EditText) findViewById(R.id.editText);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, catNames);
+//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, catNames); // было
+        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,6 +51,7 @@ public class HelloActivity extends Activity {
                     selectedCats.remove(user);
             }
         });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
