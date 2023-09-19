@@ -19,7 +19,7 @@ public class HelloActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
-    ListView listView = findViewById(R.id.listView);
+//    ListView listView = findViewById(R.id.listView);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +28,9 @@ public class HelloActivity extends Activity {
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
-        TextView textView = findViewById(R.id.textView);
+//        TextView textView = findViewById(R.id.textView); // оставь
+
+        ListView listView = findViewById(R.id.listView);
 
         final EditText editText = (EditText) findViewById(R.id.editText);
 
@@ -56,7 +58,7 @@ public class HelloActivity extends Activity {
         delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                remove(view);
+                remove(view, listView);
             }
         });
 
@@ -73,7 +75,7 @@ public class HelloActivity extends Activity {
         }
     }
 
-    public void remove(View view) {
+    public void remove(View view, ListView listView) {
         // получаем и удаляем выделенные элементы
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));

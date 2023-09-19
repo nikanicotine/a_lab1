@@ -10,31 +10,24 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Привет :)"
-            android:textAlignment="textStart"
-            android:textColor="#009688"
-            android:textSize="48sp"
-            android:visibility="visible"
-            tools:ignore="RtlCompat" />
-
 <!--        <TextView-->
-<!--            android:id="@+id/editText"-->
-<!--            android:layout_width="match_parent"-->
+<!--            android:id="@+id/textView"-->
+<!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:editable="true"-->
-<!--            android:text="editText" />-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="Привет :)"-->
+<!--            android:textAlignment="textStart"-->
+<!--            android:textColor="#009688"-->
+<!--            android:textSize="48sp"-->
+<!--            android:visibility="visible"-->
+<!--            tools:ignore="RtlCompat" />-->
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="editText"
-            android:autofillHints="напиши" />
+            android:text="напиши1"
+            android:autofillHints="напиши2" />
 
         <ListView
             android:id="@+id/listView"
