@@ -20,7 +20,6 @@ public class HelloActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
-//    ListView listView = findViewById(R.id.listView);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class HelloActivity extends Activity {
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
-//        TextView textView = findViewById(R.id.textView); // оставь
+        TextView textView = findViewById(R.id.textView); // оставь
 
         ListView listView = findViewById(R.id.listView);
 
@@ -39,6 +38,7 @@ public class HelloActivity extends Activity {
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
+        delButton.setEnabled(false);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -48,8 +48,10 @@ public class HelloActivity extends Activity {
                     selectedCats.add(user);
                 else
                     selectedCats.remove(user);
+                delButton.setEnabled(true); //TODO
             }
         });
+
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
@@ -58,11 +60,11 @@ public class HelloActivity extends Activity {
                 add(view);
             }
         });
-
         delButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 remove(view, listView);
+                delButton.setEnabled(false);
             }
         });
 
@@ -88,7 +90,8 @@ public class HelloActivity extends Activity {
         listView.clearChoices();
         // очищаем массив выбраных объектов
         selectedCats.clear();
-
         adapter.notifyDataSetChanged();
     }
 }
+
+//delButton.setEnabled(!selectedCats.isEmpty());

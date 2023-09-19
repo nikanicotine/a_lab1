@@ -13,20 +13,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
 
-            <!--        <TextView-->
-            <!--            android:id="@+id/textView"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_gravity="center"-->
-            <!--            android:text="Привет :)"-->
-            <!--            android:textAlignment="textStart"-->
-            <!--            android:textColor="#009688"-->
-            <!--            android:textSize="48sp"-->
-            <!--            android:visibility="visible"-->
-            <!--            tools:ignore="RtlCompat" />-->
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Список ваших котиков"
+                android:textAlignment="center"
+                android:textColor="#6200ED"
+                android:textSize="24sp"
+                android:visibility="visible"
+                tools:ignore="RtlCompat" />
 
             <EditText
                 android:id="@+id/editText"
@@ -36,7 +37,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:autofillHints="напиши2"
                 android:hint="Имя котика" />
 
             <ListView
@@ -48,7 +48,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:choiceMode="multipleChoice" />
+                android:choiceMode="multipleChoice"
+                android:dividerHeight="1dp" />
 
         </LinearLayout>
 
@@ -65,26 +66,27 @@
 
             <Button
                 android:id="@+id/addButton"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|left"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:background="#FFDDDD"
                 android:text="+"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <Button
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:id="@+id/delButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_weight="1"
-                android:background="#FFDDDD"
+                android:enabled="true"
                 android:gravity="bottom|center|fill_vertical"
+                android:hapticFeedbackEnabled="false"
                 android:text="—"
-                android:textSize="20sp"
-                app:rippleColor="#FFFFFF" />
+                android:textSize="30sp" />
 
         </LinearLayout>
 
