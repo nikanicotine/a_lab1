@@ -10,11 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HelloActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -28,11 +31,21 @@ public class HelloActivity extends Activity {
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
-        TextView textView = findViewById(R.id.textView); // оставь
+//        TextView textView = findViewById(R.id.textView); // оставь
 
         ListView listView = findViewById(R.id.listView);
 
         Collections.addAll(catNames, "Tom", "Bob", "Sam", "Alice");
+
+        Timer catTimer;
+        catTimer = new Timer();
+
+        catTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timerTick();
+            }
+        }, 5000);
 
         final EditText editText = (EditText) findViewById(R.id.editText);
 
@@ -48,7 +61,7 @@ public class HelloActivity extends Activity {
                     selectedCats.add(user);
                 else
                     selectedCats.remove(user);
-                delButton.setEnabled(true); //TODO
+                delButton.setEnabled(true);
             }
         });
 
@@ -70,6 +83,19 @@ public class HelloActivity extends Activity {
 
     }
 
+    private void timerTick() {
+        this.runOnUiThread(doTask);
+    }
+
+    private Runnable doTask = new Runnable() {
+        @Override
+        public void run() {
+            catNames.add("cat");
+            adapter.notifyDataSetChanged();
+        }
+    };
+
+
     public void add(View view) {
 
         EditText editText = findViewById(R.id.editText);
@@ -82,13 +108,10 @@ public class HelloActivity extends Activity {
     }
 
     public void remove(View view, ListView listView) {
-        // получаем и удаляем выделенные элементы
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));
         }
-        // снимаем все ранее установленные отметки
         listView.clearChoices();
-        // очищаем массив выбраных объектов
         selectedCats.clear();
         adapter.notifyDataSetChanged();
     }
