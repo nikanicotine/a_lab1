@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HelloActivity extends Activity {
+public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
