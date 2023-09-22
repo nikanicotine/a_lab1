@@ -24,7 +24,7 @@ public class ListActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_helloact);
+        setContentView(R.layout.activity_listact);
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
