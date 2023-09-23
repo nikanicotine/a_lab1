@@ -9,37 +9,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#1C324D"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
 
             <Button
                 android:id="@+id/loginSW"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Login" />
+                android:text="Login"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
 
 
             <Button
                 android:id="@+id/regButton"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Register" />
+                android:text="Register"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#6200ED"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:layout_weight="0"
+            app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="40dp">
 
             <LinearLayout
@@ -74,11 +81,15 @@
 
                 <Button
                     android:id="@+id/loginButton"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:text="Login" />
+                    android:layout_margin="16dp"
+                    android:backgroundTint="#74D09C"
+                    android:enabled="true"
+                    android:text="Login"
+                    android:textColor="#FFFFFF"
+                    app:cornerRadius="20dp" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

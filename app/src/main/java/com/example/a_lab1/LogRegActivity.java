@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
@@ -23,15 +24,10 @@ public class LogRegActivity extends Activity {
         setContentView(R.layout.log_reg_act);
 
         Button loginButton = findViewById(R.id.loginButton);
+        EditText loginInput = findViewById(R.id.loginInput);
+        EditText passInput = findViewById(R.id.passInput);
+
         Intent intent = new Intent(this, ListActivity.class);
-//        Button delButton = findViewById(R.id.);
-//        TextView textView = findViewById(R.id.textView); // оставь
-//
-//        ListView listView = findViewById(R.id.listView);
-//
-//        Collections.addAll(catNames, "Я", "Я", "Я", "И еще я");
-//
-//        final EditText editText = (EditText) findViewById(R.id.editText);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
@@ -40,5 +36,14 @@ public class LogRegActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+
     }
 }
+
+
+//    String user = loginInput.getText().toString();
+//    String password = passInput.getText().toString();
+//                if (!user.isEmpty() || !password.isEmpty()) {
+//                        loginButton.setEnabled(true);
+//                        }
