@@ -28,13 +28,11 @@ public class ListActivity extends Activity {
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
-        TextView textView = findViewById(R.id.textView); // оставь
+//        TextView textView = findViewById(R.id.listName); // оставь
 
         ListView listView = findViewById(R.id.listView);
 
         Collections.addAll(catNames, "Tom", "Bob", "Sam", "Alice");
-
-        final EditText editText = (EditText) findViewById(R.id.editText);
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
@@ -52,7 +50,6 @@ public class ListActivity extends Activity {
             }
         });
 
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
@@ -67,7 +64,6 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(false);
             }
         });
-
     }
 
     public void add(View view) {
@@ -82,13 +78,10 @@ public class ListActivity extends Activity {
     }
 
     public void remove(View view, ListView listView) {
-        // получаем и удаляем выделенные элементы
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));
         }
-        // снимаем все ранее установленные отметки
         listView.clearChoices();
-        // очищаем массив выбраных объектов
         selectedCats.clear();
         adapter.notifyDataSetChanged();
     }
