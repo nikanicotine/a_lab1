@@ -15,21 +15,12 @@ import androidx.annotation.Nullable;
 
 public class LogRegActivity extends Activity {
     private String TAG = "Жизненный цикл";
-    private TextView textView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_reg_act);
     }
-
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//
-//        // Get the Camera instance as the activity achieves full user focus
-//        Toast.makeText(this, "ты дурак?", Toast.LENGTH_SHORT).show(); //TODO может тут что-то сделать?
-//    }
 
     public void sendLogin(View v) { // loginButton onClick
 
@@ -99,16 +90,12 @@ public class LogRegActivity extends Activity {
     }
 
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.loginSW:
-                textView.setText("Приложение уже было запущено!");
-                break;
-            case R.id.regSW:
-                finish();
-                break;
-
-            default:
-                break;
+        TextView textView = findViewById(R.id.textView);
+        int id = v.getId();
+        if (id == R.id.loginSW) {
+            textView.setText("Приложение уже было запущено!");
+        } else if (id == R.id.regSW) {
+            finish();
         }
     }
 }

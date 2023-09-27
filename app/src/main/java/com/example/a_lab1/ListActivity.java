@@ -16,8 +16,6 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -39,7 +37,6 @@ public class ListActivity extends Activity {
         Collections.addAll(catNames, "Гера", "Капичка", "Еще кот", "И еще кот");
 
         Bundle arguments = getIntent().getExtras();
-//        String user = arguments.get("user").toString();
 
         if (arguments != null) {
             String user = arguments.getString("user");
@@ -59,7 +56,7 @@ public class ListActivity extends Activity {
                     selectedCats.add(user);
                 else
                     selectedCats.remove(user);
-                delButton.setEnabled(true); //TODO
+                delButton.setEnabled(true); // TODO
             }
         });
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +85,6 @@ public class ListActivity extends Activity {
             adapter.notifyDataSetChanged();
         }
     }
-
     public void remove(View view, ListView listView) {
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));
@@ -100,5 +96,3 @@ public class ListActivity extends Activity {
                 "Выбранные котики удалены", Toast.LENGTH_SHORT).show();
     }
 }
-
-//delButton.setEnabled(!selectedCats.isEmpty());
