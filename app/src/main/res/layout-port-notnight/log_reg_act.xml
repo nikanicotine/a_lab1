@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingDefaultResource" >
+    tools:ignore="MissingDefaultResource">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,6 +67,15 @@
                     android:hint="Your name"
                     android:inputType="text|textPersonName|textAutoComplete" />
 
+                <!--                <EditText-->
+                <!--                    android:id="@+id/loginInput"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--                    app:layout_constraintRight_toRightOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/nameLabel"-->
+                <!--                    android:autofillHints="" />-->
+
                 <EditText
                     android:id="@+id/passInput"
                     style="@android:style/Widget.Material.Light.EditText"
@@ -89,7 +98,8 @@
                     android:backgroundTint="#F4D9D6"
                     android:enabled="true"
                     android:text="Login"
-                    app:cornerRadius="20dp"/>
+                    android:onClick="sendLogin"
+                    app:cornerRadius="20dp" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

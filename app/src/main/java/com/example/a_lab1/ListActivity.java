@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -21,6 +22,7 @@ public class ListActivity extends Activity {
     ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
 
+    @SuppressLint("SetTextI18n") // ?
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +30,25 @@ public class ListActivity extends Activity {
 
         Button addButton = findViewById(R.id.addButton);
         Button delButton = findViewById(R.id.delButton);
-//        TextView textView = findViewById(R.id.listName); // оставь
+        TextView textView = findViewById(R.id.listName); // оставь
 
         ListView listView = findViewById(R.id.listView);
 
-        Collections.addAll(catNames, "Tom", "Bob", "Sam", "Alice");
+        Collections.addAll(catNames, "Гера", "Капичка", "Еще кот", "И еще кот");
+
+        Bundle arguments = getIntent().getExtras();
+//        String user = arguments.get("user").toString();
+
+        if (arguments != null) {
+            String user = arguments.getString("user");
+            Toast.makeText(ListActivity.this,
+                    "Вы зашли под именем " + user, Toast.LENGTH_SHORT).show();
+        }
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
         delButton.setEnabled(false);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,6 +96,8 @@ public class ListActivity extends Activity {
         listView.clearChoices();
         selectedCats.clear();
         adapter.notifyDataSetChanged();
+        Toast.makeText(ListActivity.this,
+                "Выбранные котики удалены", Toast.LENGTH_SHORT).show();
     }
 }
 
