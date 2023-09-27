@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -42,13 +44,12 @@ public class ListActivity extends Activity {
         if (arguments != null) {
             String user = arguments.getString("user");
             Toast.makeText(ListActivity.this,
-                    "Вы зашли под именем " + user, Toast.LENGTH_SHORT).show();
+                    "Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
         }
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
         listView.setAdapter(adapter);
         delButton.setEnabled(false);
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -61,7 +62,6 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(true); //TODO
             }
         });
-
         addButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceAsColor")
             @Override
