@@ -85,6 +85,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+                    android:onClick="onClick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|left"
@@ -99,6 +100,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/delButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+                    android:onClick="onClick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"

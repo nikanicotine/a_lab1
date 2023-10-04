@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 
 public class LogRegActivity extends Activity {
     private String TAG = "Жизненный цикл";
+    Button loginButton;
+    EditText loginInput, passInput;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,9 +26,9 @@ public class LogRegActivity extends Activity {
 
     public void sendLogin(View v) { // loginButton onClick
 
-        Button loginButton = findViewById(R.id.loginButton);
-        EditText loginInput = findViewById(R.id.loginInput);
-        EditText passInput = findViewById(R.id.passInput);
+        loginButton = findViewById(R.id.loginButton);
+        loginInput = findViewById(R.id.loginInput);
+        passInput = findViewById(R.id.passInput);
 
         String user = loginInput.getText().toString();
         String password = passInput.getText().toString();

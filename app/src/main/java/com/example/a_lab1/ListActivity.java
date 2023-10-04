@@ -2,6 +2,8 @@ package com.example.a_lab1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +23,13 @@ public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
     ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
+    Button addButton, delButton;
+    TextView textView;
+    ListView listView;
+    EditText editCat;
+//    public static final String APP_PREFERENCES = "mysettings";
+//    public static final String APP_PREFERENCES_NAME = "Nickname"; // имя кота
+//    SharedPreferences mSettings;
 
     @SuppressLint("SetTextI18n") // ?
     @Override
@@ -28,13 +37,15 @@ public class ListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listact);
 
-        Button addButton = findViewById(R.id.addButton);
-        Button delButton = findViewById(R.id.delButton);
-        TextView textView = findViewById(R.id.listName); // оставь
-
-        ListView listView = findViewById(R.id.listView);
+        addButton = findViewById(R.id.addButton);
+        delButton = findViewById(R.id.delButton);
+        textView = findViewById(R.id.listName); // оставь
+        listView = findViewById(R.id.listView);
 
         Collections.addAll(catNames, "Гера", "Капичка", "Еще кот", "И еще кот");
+
+//        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        editCat = findViewById(R.id.editText);
 
         Bundle arguments = getIntent().getExtras();
 
@@ -59,32 +70,44 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(true); // TODO
             }
         });
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceAsColor")
-            @Override
-            public void onClick(View view) {
-                add(view);
-            }
-        });
-        delButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                remove(view, listView);
-                delButton.setEnabled(false);
-            }
-        });
+    }
+    @SuppressLint("NonConstantResourceId")
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.addButton) {
+            add(v);
+        } else if (id == R.id.delButton) {
+            remove(v, listView);
+            delButton.setEnabled(false);
+        }
+//        switch (v.getId()) {
+//            case R.id.addButton:
+//                add(v);
+//                break;
+//            case R.id.delButton:
+//                remove(v, listView);
+//                delButton.setEnabled(false);
+//                break;
+//        }
     }
 
-    public void add(View view) {
+//    protected void onPause(String cat) {
+//        super.onPause();
+//        SharedPreferences.Editor editor = mSettings.edit();
+//        editor.putString(APP_PREFERENCES_NAME, cat);
+//        editor.apply();
+//    }
 
-        EditText editText = findViewById(R.id.editText);
-        String user = editText.getText().toString();
-        if (!user.isEmpty()) {
-            adapter.add(user);
-            editText.setText("");
+    public void add(View view) {
+        editCat = findViewById(R.id.editText);
+        String cat = editCat.getText().toString();
+        if (!cat.isEmpty()) {
+            adapter.add(cat);
+            editCat.setText("");
             adapter.notifyDataSetChanged();
         }
     }
+
     public void remove(View view, ListView listView) {
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));
