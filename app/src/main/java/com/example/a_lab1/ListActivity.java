@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,11 +56,12 @@ public class ListActivity extends Activity {
                     "Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
         }
 
-        adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, catNames);
 
         String name = mSettings.getString(APP_PREFERENCES_NAME,""); // ?
 
         listCats.setAdapter(adapter);
+        LoadPreferences();
         delButton.setEnabled(false);
 
         listCats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,6 +75,25 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(true); // TODO
             }
         });
+
+    }
+
+    protected void SavePreferences(String value) {
+        // TODO Auto-generated method stub
+        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = data.edit();
+        editor.putString("CAT", value);
+        editor.apply();
+
+
+    }
+
+    protected void LoadPreferences(){
+        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
+        String dataSet = data.getString("CATS", "");
+
+        adapter.add(dataSet);
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -95,12 +116,13 @@ public class ListActivity extends Activity {
 //        }
     }
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         String cat = editCat.getText().toString();
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putString(APP_PREFERENCES_NAME, cat);
         editor.apply();
+        SavePreferences(cat);
     }
 
     public void add(View view) {
