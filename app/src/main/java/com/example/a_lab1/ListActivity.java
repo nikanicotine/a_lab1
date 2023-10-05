@@ -25,11 +25,11 @@ public class ListActivity extends Activity {
     ArrayList<String> selectedCats = new ArrayList<>();
     Button addButton, delButton;
     TextView textView;
-    ListView listView;
+    ListView listCats;
     EditText editCat;
-//    public static final String APP_PREFERENCES = "mysettings";
-//    public static final String APP_PREFERENCES_NAME = "Nickname"; // имя кота
-//    SharedPreferences mSettings;
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_NAME = "Nickname"; // имя кота
+    SharedPreferences mSettings;
 
     @SuppressLint("SetTextI18n") // ?
     @Override
@@ -40,11 +40,11 @@ public class ListActivity extends Activity {
         addButton = findViewById(R.id.addButton);
         delButton = findViewById(R.id.delButton);
         textView = findViewById(R.id.listName); // оставь
-        listView = findViewById(R.id.listView);
+        listCats = findViewById(R.id.listCats);
 
         Collections.addAll(catNames, "Гера", "Капичка", "Еще кот", "И еще кот");
 
-//        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         editCat = findViewById(R.id.editText);
 
         Bundle arguments = getIntent().getExtras();
@@ -56,14 +56,17 @@ public class ListActivity extends Activity {
         }
 
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, catNames);
-        listView.setAdapter(adapter);
+
+        String name = mSettings.getString(APP_PREFERENCES_NAME,""); // ?
+
+        listCats.setAdapter(adapter);
         delButton.setEnabled(false);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listCats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 String user = adapter.getItem(position);
-                if (listView.isItemChecked(position))
+                if (listCats.isItemChecked(position))
                     selectedCats.add(user);
                 else
                     selectedCats.remove(user);
@@ -71,13 +74,14 @@ public class ListActivity extends Activity {
             }
         });
     }
+
     @SuppressLint("NonConstantResourceId")
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.addButton) {
             add(v);
         } else if (id == R.id.delButton) {
-            remove(v, listView);
+            remove(v, listCats);
             delButton.setEnabled(false);
         }
 //        switch (v.getId()) {
@@ -90,13 +94,14 @@ public class ListActivity extends Activity {
 //                break;
 //        }
     }
-
-//    protected void onPause(String cat) {
-//        super.onPause();
-//        SharedPreferences.Editor editor = mSettings.edit();
-//        editor.putString(APP_PREFERENCES_NAME, cat);
-//        editor.apply();
-//    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        String cat = editCat.getText().toString();
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_NAME, cat);
+        editor.apply();
+    }
 
     public void add(View view) {
         editCat = findViewById(R.id.editText);
