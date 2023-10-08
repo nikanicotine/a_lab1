@@ -3,23 +3,21 @@ package com.example.a_lab1;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-public class LogRegActivity extends Activity {
+public class RegActivity extends Activity {
     Button loginButton;
     EditText loginInput, passInput;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.log_reg_act);
+        setContentView(R.layout.reg_act);
     }
 
     public void sendLogin(View v) { // loginButton onClick
@@ -40,10 +38,11 @@ public class LogRegActivity extends Activity {
         intent.putExtra("user", user);
         startActivity(intent);
     }
+
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.regSW) {
-            Intent intent = new Intent(this, RegActivity.class);
+        if (id == R.id.loginSW) {
+            Intent intent = new Intent(this, LogRegActivity.class);
             startActivity(intent);
         } else if (id == R.id.loginSW) {
             return;
