@@ -43,7 +43,7 @@ public class ListActivity extends Activity {
         textView = findViewById(R.id.listName); // оставь
         listCats = findViewById(R.id.listCats);
 
-        Collections.addAll(catNames, "Гера", "Капичка", "Еще кот", "И еще кот");
+        Collections.addAll(catNames, "Гера", "Капичка", "Носок", "Еще кот", "И еще кот");
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         editCat = findViewById(R.id.editText);
@@ -57,8 +57,6 @@ public class ListActivity extends Activity {
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, catNames);
-
-        String name = mSettings.getString(APP_PREFERENCES_NAME,""); // ?
 
         listCats.setAdapter(adapter);
         LoadPreferences();
@@ -78,20 +76,20 @@ public class ListActivity extends Activity {
 
     }
 
-    protected void SavePreferences(String value) {
-        // TODO Auto-generated method stub
-        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = data.edit();
-        editor.putString("CAT", value);
+    protected void SavePreferences() {
+//        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
+//        SharedPreferences.Editor editor = data.edit();
+//        editor.putString("CAT", value);
+//        editor.apply();
+        String cat = catNames.toString();
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_NAME, cat);
         editor.apply();
-
-
     }
 
-    protected void LoadPreferences(){
-        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
+    protected void LoadPreferences() {
+        SharedPreferences data = getPreferences(MODE_PRIVATE);
         String dataSet = data.getString("CATS", "");
-
         adapter.add(dataSet);
         adapter.notifyDataSetChanged();
     }
@@ -110,19 +108,20 @@ public class ListActivity extends Activity {
 //                add(v);
 //                break;
 //            case R.id.delButton:
-//                remove(v, listView);
+//                remove(v, listCats);
 //                delButton.setEnabled(false);
 //                break;
 //        }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
-        String cat = editCat.getText().toString();
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_NAME, cat);
-        editor.apply();
-        SavePreferences(cat);
+//        String cat = catNames.toString();
+//        SharedPreferences.Editor editor = mSettings.edit();
+//        editor.putString(APP_PREFERENCES_NAME, cat);
+//        editor.apply();
+        SavePreferences();
     }
 
     public void add(View view) {
