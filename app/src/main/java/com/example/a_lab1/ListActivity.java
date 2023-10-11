@@ -18,7 +18,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
@@ -43,7 +47,7 @@ public class ListActivity extends Activity {
         textView = findViewById(R.id.listName); // оставь
         listCats = findViewById(R.id.listCats);
 
-        Collections.addAll(catNames, "Гера", "Капичка", "Носок", "Еще кот", "И еще кот");
+//        Collections.addAll(catNames, "Гера", "Капичка", "Носок", "Еще кот", "И еще кот");
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         editCat = findViewById(R.id.editText);
@@ -88,9 +92,18 @@ public class ListActivity extends Activity {
     }
 
     protected void LoadPreferences() {
-        SharedPreferences data = getPreferences(MODE_PRIVATE);
-        String dataSet = data.getString("CATS", "");
-        adapter.add(dataSet);
+//        SharedPreferences data = getPreferences(MODE_PRIVATE);
+//        String dataSet = data.getString("Nickname", "fff");
+//        adapter.add(dataSet);
+//        adapter.notifyDataSetChanged();
+
+        SharedPreferences data = this.getSharedPreferences("mysettings", MODE_PRIVATE);
+        String dataSet = data.getString("Nickname", null);
+        if (Objects.equals(dataSet, "[]")) return;
+        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
+        String[] cats = dataSet.split(", ");
+
+        adapter.addAll(cats);
         adapter.notifyDataSetChanged();
     }
 
