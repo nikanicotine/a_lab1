@@ -39,16 +39,10 @@ public class LogRegActivity extends Activity {
     }
 
     public void sendLogin(View v) { // loginButton onClick
-
-        TextView textView = findViewById(R.id.textView);
-
-
         ponCheckBox = findViewById(R.id.ponCheckBox);
         if (ponCheckBox.isChecked()) {
-            textView.setText("Флажок выбран");
             SavePreferences();
         } else {
-            textView.setText("Флажок не выбран");
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putString(APP_PREFERENCES_LOG, "");
             editor.apply();
@@ -61,6 +55,7 @@ public class LogRegActivity extends Activity {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
+
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("user", user);
         startActivity(intent);

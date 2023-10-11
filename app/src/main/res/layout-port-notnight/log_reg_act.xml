@@ -95,6 +95,9 @@
                     android:id="@+id/ponCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="Пон?" />
 
                 <com.google.android.material.button.MaterialButton
@@ -113,12 +116,6 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
 
     </LinearLayout>
 
