@@ -95,7 +95,7 @@
                     android:id="@+id/ponCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Пон? " />
+                    android:text="Пон?" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/loginButton"

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,10 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ListActivity extends Activity {
@@ -77,14 +72,9 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(true); // TODO
             }
         });
-
     }
 
     protected void SavePreferences() {
-//        SharedPreferences data = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor = data.edit();
-//        editor.putString("CAT", value);
-//        editor.apply();
         String cat = catNames.toString();
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putString(APP_PREFERENCES_NAME, cat);
@@ -92,11 +82,6 @@ public class ListActivity extends Activity {
     }
 
     protected void LoadPreferences() {
-//        SharedPreferences data = getPreferences(MODE_PRIVATE);
-//        String dataSet = data.getString("Nickname", "fff");
-//        adapter.add(dataSet);
-//        adapter.notifyDataSetChanged();
-
         SharedPreferences data = this.getSharedPreferences("mysettings", MODE_PRIVATE);
         String dataSet = data.getString("Nickname", null);
         if (Objects.equals(dataSet, "[]")) return;
