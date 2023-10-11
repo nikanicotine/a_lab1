@@ -14,13 +14,16 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 public class LogRegActivity extends Activity {
     Button loginButton;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
-    public static final String APP_PREFERENCES_NAME = "Login"; // имя кота
+    public static final String APP_PREFERENCES_LOG = "Login"; // логин
+
     SharedPreferences mSettings;
 
     @Override
@@ -46,6 +49,9 @@ public class LogRegActivity extends Activity {
             SavePreferences();
         } else {
             textView.setText("Флажок не выбран");
+            SharedPreferences.Editor editor = mSettings.edit();
+            editor.putString(APP_PREFERENCES_LOG, "");
+            editor.apply();
         }
 
         String user = loginInput.getText().toString();
@@ -63,22 +69,16 @@ public class LogRegActivity extends Activity {
     protected void SavePreferences() {
         String log = loginInput.getText().toString();
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_NAME, log);
+        editor.putString(APP_PREFERENCES_LOG, log);
         editor.apply();
     }
 
     protected void LoadPreferences() {
-//        SharedPreferences data = getPreferences(MODE_PRIVATE);
-//        String dataSet = data.getString("Nickname", "fff");
-//        adapter.add(dataSet);
-//        adapter.notifyDataSetChanged();
-
         SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
         String dataSet = data.getString("Login", null);
-//        if (Objects.equals(dataSet, "[]")) return;
-//        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
-//        String[] cats = dataSet.split(", ");
-
+        if (Objects.equals(dataSet, null)) return;
+        if (Objects.equals(dataSet, "[]")) return;
+        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
         loginInput.setText(dataSet);
     }
 
@@ -90,32 +90,5 @@ public class LogRegActivity extends Activity {
         } else if (id == R.id.loginSW) {
             return;
         }
-//        else if (id == R.id.loginButton) {
-//            ponCheckBox = findViewById(R.id.ponCheckBox);
-//            if (ponCheckBox.isChecked()) {
-//                textView.setText("Флажок выбран");
-//                SavePreferences();
-//            } else {
-//                textView.setText("Флажок не выбран");
-//            }
-        }
-//        else if (id == R.id.ponCheckBox) {
-//            if(ponCheckBox.isChecked())
-//                textView.setText("Флажок выбран");
-//            else {
-//                textView.setText("Флажок не выбран");
-//            }
-//        }
-//    }
-
-//    public void onClick1(View v) {
-//        TextView textView = findViewById(R.id.textView);
-//        ponCheckBox = findViewById(R.id.ponCheckBox);
-//        if (ponCheckBox.isChecked()) {
-//            textView.setText("Флажок выбран");
-//            SavePreferences();
-//        } else {
-//            textView.setText("Флажок не выбран");
-//        }
-//    }
+    }
 }

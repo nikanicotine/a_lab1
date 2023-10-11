@@ -1,5 +1,7 @@
 package com.example.a_lab1;
 
+import static com.example.a_lab1.LogRegActivity.APP_PREFERENCES;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -27,8 +29,8 @@ public class ListActivity extends Activity {
     TextView textView;
     ListView listCats;
     EditText editCat;
-    public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_NAME = "Nickname"; // имя кота
+//    public static final String APP_PREFERENCES = "mysettingsLog";
+    public static final String APP_PREFERENCES_CATS = "Cat"; // имя кота
     SharedPreferences mSettings;
 
     @SuppressLint("SetTextI18n") // ?
@@ -77,13 +79,14 @@ public class ListActivity extends Activity {
     protected void SavePreferences() {
         String cat = catNames.toString();
         SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_NAME, cat);
+        editor.putString(APP_PREFERENCES_CATS, cat);
         editor.apply();
     }
 
     protected void LoadPreferences() {
-        SharedPreferences data = this.getSharedPreferences("mysettings", MODE_PRIVATE);
-        String dataSet = data.getString("Nickname", null);
+        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
+        String dataSet = data.getString("Cat", null);
+        if (Objects.equals(dataSet, null)) return;
         if (Objects.equals(dataSet, "[]")) return;
         dataSet = dataSet.replaceAll("^\\[|\\]$", "");
         String[] cats = dataSet.split(", ");
