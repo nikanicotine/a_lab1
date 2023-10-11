@@ -29,8 +29,7 @@ public class ListActivity extends Activity {
     TextView textView;
     ListView listCats;
     EditText editCat;
-//    public static final String APP_PREFERENCES = "mysettingsLog";
-    public static final String APP_PREFERENCES_CATS = "Cat"; // имя кота
+    public static final String APP_PREFERENCES_CATS = "Cat";
     SharedPreferences mSettings;
 
     @SuppressLint("SetTextI18n") // ?
@@ -41,10 +40,8 @@ public class ListActivity extends Activity {
 
         addButton = findViewById(R.id.addButton);
         delButton = findViewById(R.id.delButton);
-        textView = findViewById(R.id.listName); // оставь
+        textView = findViewById(R.id.listName);
         listCats = findViewById(R.id.listCats);
-
-//        Collections.addAll(catNames, "Гера", "Капичка", "Носок", "Еще кот", "И еще кот");
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         editCat = findViewById(R.id.editText);
@@ -104,24 +101,11 @@ public class ListActivity extends Activity {
             remove(v, listCats);
             delButton.setEnabled(false);
         }
-//        switch (v.getId()) {
-//            case R.id.addButton:
-//                add(v);
-//                break;
-//            case R.id.delButton:
-//                remove(v, listCats);
-//                delButton.setEnabled(false);
-//                break;
-//        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        String cat = catNames.toString();
-//        SharedPreferences.Editor editor = mSettings.edit();
-//        editor.putString(APP_PREFERENCES_NAME, cat);
-//        editor.apply();
         SavePreferences();
     }
 

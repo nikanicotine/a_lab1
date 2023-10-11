@@ -22,7 +22,7 @@ public class LogRegActivity extends Activity {
     EditText loginInput, passInput;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
-    public static final String APP_PREFERENCES_LOG = "Login"; // логин
+    public static final String APP_PREFERENCES_LOG = "Login";
 
     SharedPreferences mSettings;
 
