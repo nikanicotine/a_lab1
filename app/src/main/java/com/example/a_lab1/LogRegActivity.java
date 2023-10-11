@@ -24,7 +24,7 @@ public class LogRegActivity extends Activity {
     EditText loginInput, passInput;
     SharedPreferences mSettings;
     public static final String APP_PREFERENCES = "mysettingsLog";
-    public static final String APP_PREFERENCES_NAME = "Nickname"; // имя кота
+    public static final String APP_PREFERENCES_NAME = "Login"; // имя кота
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,17 +47,15 @@ public class LogRegActivity extends Activity {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("user", user);
         startActivity(intent);
     }
 
     protected void SavePreferences() {
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.saved_high_score_key), newHighScore);
+        String log = loginInput.getText().toString();
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_NAME, log);
         editor.apply();
     }
 
