@@ -98,7 +98,7 @@
                     app:rippleColor="#F3D8D5" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/delButton"
+                    android:id="@+id/delUserButton"
                     style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
                     android:onClick="onClick"
                     android:layout_width="wrap_content"

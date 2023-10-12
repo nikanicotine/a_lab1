@@ -20,7 +20,7 @@ public class LogActivity extends Activity {
     Button loginButton, loginSW;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
-    CardView logCard, regCard, passCard;
+    CardView logCard, regCard, passCard, delCard;
 
 //    Switch loginSW;
 
@@ -40,29 +40,7 @@ public class LogActivity extends Activity {
         loginInput = findViewById(R.id.loginInput);
         passInput = findViewById(R.id.passInput);
         LoadPreferences();
-
-//        loginSW = findViewById(R.id.loginSW);
-////        if (loginSW != null) {
-////            loginSW.setOnCheckedChangeListener();
-////        }
-//
-//        loginSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                Intent intent = new Intent(this, RegActivity.class);
-//                Intent intent1 = new Intent(this, LogRegActivity.class);
-//                Toast.makeText(LogRegActivity.this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
-//                Toast.LENGTH_SHORT).show();
-//
-//                if (loginSW.isChecked()) startActivity(intent) : startActivity(intent1);
-//            }
-//        });
-
     }
-//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        Toast.makeText(this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
-//                Toast.LENGTH_SHORT).show();
-//    }
 
     public void sendLogin(View v) { // loginButton onClick
         ponCheckBox = findViewById(R.id.ponCheckBox);
@@ -109,26 +87,38 @@ public class LogActivity extends Activity {
         logCard = findViewById(R.id.logCard);
         regCard = findViewById(R.id.regCard);
         passCard = findViewById(R.id.passCard);
+        delCard = findViewById(R.id.delCard);
 
         if (id == R.id.regSW) {
             logCard.setVisibility(View.GONE);
             passCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.GONE);
             regCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.loginSW) {
-            logCard.setVisibility(View.VISIBLE);
             passCard.setVisibility(View.GONE);
             regCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.delUser) {
+            logCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.delCancelButton) {
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.delUserButton) {
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "User deleted :(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.changePass) {
             logCard.setVisibility(View.GONE);
             passCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.cancelButton) {
-            logCard.setVisibility(View.VISIBLE);
             passCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.saveButton) {
             passCard.setVisibility(View.GONE);
             logCard.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
-
         }
     }
 }

@@ -39,7 +39,7 @@ public class ListActivity extends Activity {
         setContentView(R.layout.activity_listact);
 
         addButton = findViewById(R.id.addButton);
-        delButton = findViewById(R.id.delButton);
+        delButton = findViewById(R.id.delUserButton);
         textView = findViewById(R.id.listName);
         listCats = findViewById(R.id.listCats);
 
@@ -97,7 +97,7 @@ public class ListActivity extends Activity {
         int id = v.getId();
         if (id == R.id.addButton) {
             add(v);
-        } else if (id == R.id.delButton) {
+        } else if (id == R.id.delUserButton) {
             remove(v, listCats);
             delButton.setEnabled(false);
         }

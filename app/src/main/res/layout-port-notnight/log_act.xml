@@ -58,8 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="visible"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
                 <EditText
                     android:id="@+id/loginInput"
@@ -103,6 +103,16 @@
                     android:layout_marginTop="16dp"
                     android:onClick="onClick"
                     android:text="Ne pon?"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/delUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:onClick="onClick"
+                    android:text="Del?"
                     android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -283,6 +293,89 @@
                     android:onClick="onClick"
                     android:text="Save"
                     app:cornerRadius="20dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/delCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:layout_weight="0"
+            android:visibility="gone"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="40dp"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <EditText
+                    android:id="@+id/delLoginInput"
+                    style="@android:style/Widget.Material.Light.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="Your name"
+                    android:inputType="text|textPersonName|textAutoComplete" />
+
+                <EditText
+                    android:id="@+id/delPassInput"
+                    style="@android:style/Widget.Material.Light.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/delCancelButton"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#F4D9D6"
+                        android:onClick="onClick"
+                        android:text="Cancel"
+                        app:cornerRadius="20dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/delUserButton"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#F4D9D6"
+                        android:onClick="onClick"
+                        android:text="Delete"
+                        app:cornerRadius="20dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
