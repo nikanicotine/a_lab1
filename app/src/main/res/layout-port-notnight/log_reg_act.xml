@@ -19,7 +19,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp">
 
-            <Switch
+            <Button
                 android:id="@+id/loginSW"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
@@ -28,8 +28,7 @@
                 android:onClick="onClick"
                 android:text="Login"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                android:textSize="20sp"/>
 
 
             <Button

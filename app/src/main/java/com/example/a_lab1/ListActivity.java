@@ -1,6 +1,6 @@
 package com.example.a_lab1;
 
-import static com.example.a_lab1.LogRegActivity.APP_PREFERENCES;
+import static com.example.a_lab1.LogActivity.APP_PREFERENCES;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

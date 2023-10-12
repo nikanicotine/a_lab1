@@ -8,20 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
-
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import java.util.Objects;
 
-public class LogRegActivity extends Activity {
+public class LogActivity extends Activity {
     Button loginButton, loginSW;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
