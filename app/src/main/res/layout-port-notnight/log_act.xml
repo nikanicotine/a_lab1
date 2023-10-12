@@ -19,7 +19,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginSW"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
@@ -28,7 +28,8 @@
                 android:onClick="onClick"
                 android:text="Login"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:cornerRadius="20dp"/>
 
 
             <Button
@@ -82,22 +83,22 @@
                     android:ems="10"
                     android:hint="Password"
                     android:inputType="textPassword"
+                    android:password="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <CheckBox
                     android:id="@+id/ponCheckBox"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="sans-serif"
                     android:text="Pon?"
                     android:textColor="#666666"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/changePass"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
@@ -107,7 +108,7 @@
 
                 <TextView
                     android:id="@+id/delUser"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"

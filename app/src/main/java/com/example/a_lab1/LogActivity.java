@@ -17,7 +17,7 @@ import androidx.cardview.widget.CardView;
 import java.util.Objects;
 
 public class LogActivity extends Activity {
-    Button loginButton, loginSW;
+    Button loginButton;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
     CardView logCard, regCard, passCard, delCard;
