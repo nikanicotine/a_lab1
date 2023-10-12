@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import java.util.Objects;
 
@@ -19,6 +20,7 @@ public class LogActivity extends Activity {
     Button loginButton, loginSW;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
+    CardView logCard, passCard;
 
 //    Switch loginSW;
 
@@ -30,7 +32,7 @@ public class LogActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.log_reg_act);
+        setContentView(R.layout.log_act);
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -103,6 +105,10 @@ public class LogActivity extends Activity {
 
     public void onClick(View v) {
         int id = v.getId();
+
+        logCard = findViewById(R.id.logCard);
+        passCard = findViewById(R.id.passCard);
+
         if (id == R.id.regSW) {
             Intent intent = new Intent(this, RegActivity.class);
             startActivity(intent);
@@ -125,6 +131,17 @@ public class LogActivity extends Activity {
 //                    startActivity(!loginSW.isChecked() ? intent : intent1); //off on
 //                }
 //            });
+        } else if (id == R.id.changePass) {
+            logCard.setVisibility(View.GONE);
+            passCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.cancelButton) {
+            logCard.setVisibility(View.VISIBLE);
+            passCard.setVisibility(View.GONE);
+        } else if (id == R.id.saveButton) {
+            passCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+
         }
     }
 }
