@@ -20,7 +20,7 @@ public class LogActivity extends Activity {
     Button loginButton, loginSW;
     CheckBox ponCheckBox;
     EditText loginInput, passInput;
-    CardView logCard, passCard;
+    CardView logCard, regCard, passCard;
 
 //    Switch loginSW;
 
@@ -107,30 +107,17 @@ public class LogActivity extends Activity {
         int id = v.getId();
 
         logCard = findViewById(R.id.logCard);
+        regCard = findViewById(R.id.regCard);
         passCard = findViewById(R.id.passCard);
 
         if (id == R.id.regSW) {
-            Intent intent = new Intent(this, RegActivity.class);
-            startActivity(intent);
-
+            logCard.setVisibility(View.GONE);
+            passCard.setVisibility(View.GONE);
+            regCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.loginSW) {
-//            Intent intent = new Intent(this, LogRegActivity.class);
-//            Intent intent1 = new Intent(this, RegActivity.class);
-//
-//            loginSW = findViewById(R.id.loginSW);
-////        if (loginSW != null) {
-////            loginSW.setOnCheckedChangeListener();
-////        }
-//
-//            loginSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                    Toast.makeText(LogRegActivity.this, "Отслеживание переключения: " + (isChecked ? "on" : "off"),
-//                            Toast.LENGTH_SHORT).show();
-//
-//                    startActivity(!loginSW.isChecked() ? intent : intent1); //off on
-//                }
-//            });
+            logCard.setVisibility(View.VISIBLE);
+            passCard.setVisibility(View.GONE);
+            regCard.setVisibility(View.GONE);
         } else if (id == R.id.changePass) {
             logCard.setVisibility(View.GONE);
             passCard.setVisibility(View.VISIBLE);
