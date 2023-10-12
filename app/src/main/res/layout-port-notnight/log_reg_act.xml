@@ -16,18 +16,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp">
 
-            <Button
+            <Switch
                 android:id="@+id/loginSW"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="onClick"
                 android:text="Login"
                 android:textColor="#FFFFFF"
-                android:onClick="onClick"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
             <Button
@@ -36,9 +38,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="onClick"
                 android:text="Register"
                 android:textColor="#FFFFFF"
-                android:onClick="onClick"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -63,42 +65,34 @@
                     style="@android:style/Widget.Material.Light.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:hint="Your name"
                     android:inputType="text|textPersonName|textAutoComplete" />
-
-                <!--                <EditText-->
-                <!--                    android:id="@+id/loginInput"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--                    app:layout_constraintRight_toRightOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/nameLabel"-->
-                <!--                    android:autofillHints="" />-->
 
                 <EditText
                     android:id="@+id/passInput"
                     style="@android:style/Widget.Material.Light.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:hint="Password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <CheckBox
                     android:id="@+id/ponCheckBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="Пон?" />
+                    android:fontFamily="sans-serif"
+                    android:text="Pon?"
+                    android:textColor="#666666"
+                    android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/loginButton"
@@ -109,8 +103,8 @@
                     android:layout_margin="16dp"
                     android:backgroundTint="#F4D9D6"
                     android:enabled="true"
-                    android:text="Login"
                     android:onClick="sendLogin"
+                    android:text="Login"
                     app:cornerRadius="20dp" />
 
             </LinearLayout>
