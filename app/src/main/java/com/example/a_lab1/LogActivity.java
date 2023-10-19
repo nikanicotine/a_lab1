@@ -109,9 +109,9 @@ public class LogActivity extends Activity {
 
         public void del(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String[] delString = new String[] {user.getLogin()};
+            String[] delString = new String[]{user.getLogin()};
 
-            db.delete(DBContract.UserEntry.TABLE_NAME,  DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+            db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
             db.close();
         }
 
@@ -203,7 +203,6 @@ public class LogActivity extends Activity {
     }
 
     public void regUser(View v) {
-        int id = v.getId();
 
         regNewUserButton = findViewById(R.id.regNewUserButton);
         newLoginInput = findViewById(R.id.newLoginInput);
@@ -217,16 +216,15 @@ public class LogActivity extends Activity {
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("user", user);
 
-        if (id == R.id.regNewUserButton) {
-            if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
-                Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (regFirstPassInput.getText().toString().equals(regSecondPassInput.getText().toString())) {
-                db.addUser(new User(newLoginInput.getText().toString(), regFirstPassInput.getText().toString()));
-                startActivity(intent);
-            } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
-        }
+        if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
+            Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+        } else if (password1.equals(password2)) {
+            db.addUser(new User(newLoginInput.getText().toString(), regFirstPassInput.getText().toString()));
+            newLoginInput.setText("");
+            regFirstPassInput.setText("");
+            regSecondPassInput.setText("");
+            startActivity(intent);
+        } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
     }
 
     public void savePass(View v) {
@@ -270,7 +268,7 @@ public class LogActivity extends Activity {
         if (id == R.id.delUserButton) {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
 //                if () {
 //
 //                }
