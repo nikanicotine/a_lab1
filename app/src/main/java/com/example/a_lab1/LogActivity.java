@@ -49,7 +49,7 @@ public class LogActivity extends Activity {
         LoadPreferences();
     }
 
-//    @Override
+    //    @Override
 //    protected void onPause() {
 //        super.onPause();
 //        db.deleteAll();
@@ -62,7 +62,8 @@ public class LogActivity extends Activity {
 
     public final class DBContract {
 
-        private DBContract() {}
+        private DBContract() {
+        }
 
         public class UserEntry implements BaseColumns {
             public static final String TABLE_NAME = "USERS";
@@ -106,7 +107,13 @@ public class LogActivity extends Activity {
             db.close();
         }
 
+        public void del(User user) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String[] delString = new String[] {user.getLogin()};
 
+            db.delete(DBContract.UserEntry.TABLE_NAME,  DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+            db.close();
+        }
 
         public List<User> getAllUsers() {
             List<User> usersList = new ArrayList<User>();
@@ -133,36 +140,41 @@ public class LogActivity extends Activity {
         String _login;
         String _pass;
 
-        public User(){
+        public User() {
         }
-        public User(int id, String login, String pass){
+
+        public User(int id, String login, String pass) {
             this._id = id;
             this._login = login;
             this._pass = pass;
         }
-        public User(String login, String pass){
+
+        public User(String login, String pass) {
             this._login = login;
             this._pass = pass;
         }
 
-        public int getID(){
+        public int getID() {
             return this._id;
         }
-        public void setID(int id){
+
+        public void setID(int id) {
             this._id = id;
         }
 
-        public String getLogin(){
+        public String getLogin() {
             return this._login;
         }
-        public void setLogin(String login){
+
+        public void setLogin(String login) {
             this._login = login;
         }
 
-        public String getPass(){
+        public String getPass() {
             return this._pass;
         }
-        public void setPass(String pass){
+
+        public void setPass(String pass) {
             this._pass = pass;
         }
     }
@@ -213,12 +225,11 @@ public class LogActivity extends Activity {
             if (regFirstPassInput.getText().toString().equals(regSecondPassInput.getText().toString())) {
                 db.addUser(new User(newLoginInput.getText().toString(), regFirstPassInput.getText().toString()));
                 startActivity(intent);
-            }
-            else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void savePass(View v){
+    public void savePass(View v) {
         passCard.setVisibility(View.GONE);
         logCard.setVisibility(View.VISIBLE);
 
@@ -233,17 +244,19 @@ public class LogActivity extends Activity {
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("user", user);
 
-            if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
-                Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
+            Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+            return;
+        }
 //            if () { //если пользователь найден
 //                //меняем пароль
 //                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
 //                startActivity(intent);
 //            }
-            else Toast.makeText(this, "Несуществующий пользователь или неправильный пароль!", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Несуществующий пользователь или неправильный пароль!", Toast.LENGTH_SHORT).show();
     }
+
     public void delUser(View v) {
         int id = v.getId();
 
@@ -257,14 +270,18 @@ public class LogActivity extends Activity {
         if (id == R.id.delUserButton) {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-                return;
+            }else{
+//                if () {
+//
+//                }
+                db.del(new User(user, password));
             }
-//            if () { //если пользователь найден
-//                // удаляем
-//            } else
-            // несуществующий пользователь или неправильный пароль
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
         }
     }
+
     protected void SavePreferences() {
         String log = loginInput.getText().toString();
         SharedPreferences.Editor editor = mSettings.edit();
@@ -308,14 +325,13 @@ public class LogActivity extends Activity {
         } else if (id == R.id.delUser) {
             logCard.setVisibility(View.GONE);
             delCard.setVisibility(View.VISIBLE);
-            //delUser();
         } else if (id == R.id.delCancelButton) {
             delCard.setVisibility(View.GONE);
             logCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.delUserButton) {
-            delCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.delUserButton) {
+//            delCard.setVisibility(View.GONE);
+//            logCard.setVisibility(View.VISIBLE);
+//            Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.changePass) {
             logCard.setVisibility(View.GONE);
             passCard.setVisibility(View.VISIBLE);
