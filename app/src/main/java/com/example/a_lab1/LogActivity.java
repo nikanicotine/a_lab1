@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,8 +103,11 @@ public class LogActivity extends Activity {
             ContentValues values = new ContentValues();
             values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
             values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
-
+            String check = user.getLogin();
+            String query = "select * from USERS where LOGIN like " + '"' + check + '"';
+            Cursor cur = db.rawQuery(query, null);
             db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
+            cur.close();
             db.close();
         }
 
@@ -216,6 +220,7 @@ public class LogActivity extends Activity {
         Intent intent = new Intent(this, ListActivity.class);
         intent.putExtra("user", user);
 
+
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else if (password1.equals(password2)) {
@@ -244,7 +249,6 @@ public class LogActivity extends Activity {
 
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-            return;
         }
 //            if () { //если пользователь найден
 //                //меняем пароль
