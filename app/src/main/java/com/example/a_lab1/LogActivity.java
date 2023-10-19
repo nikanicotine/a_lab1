@@ -219,7 +219,7 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else if (password1.equals(password2)) {
-            db.addUser(new User(newLoginInput.getText().toString(), regFirstPassInput.getText().toString()));
+            db.addUser(new User(user, password1));
             newLoginInput.setText("");
             regFirstPassInput.setText("");
             regSecondPassInput.setText("");
