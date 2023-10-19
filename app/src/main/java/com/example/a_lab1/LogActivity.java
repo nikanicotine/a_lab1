@@ -25,9 +25,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class LogActivity extends Activity {
-    Button loginButton, regNewUserButton;
+    Button loginButton, regNewUserButton, delUserButton;
     CheckBox ponCheckBox;
-    EditText loginInput, passInput, newLoginInput, regFirstPassInput, regSecondPassInput;
+    EditText loginInput, passInput, newLoginInput, regFirstPassInput, regSecondPassInput,
+            delLoginInput, delPassInput, loginInput2, oldPassInput, newPassInput;
     CardView logCard, regCard, passCard, delCard;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
@@ -105,6 +106,8 @@ public class LogActivity extends Activity {
             db.close();
         }
 
+
+
         public List<User> getAllUsers() {
             List<User> usersList = new ArrayList<User>();
             String selectQuery = "SELECT  * FROM " + DBContract.UserEntry.TABLE_NAME;
@@ -123,12 +126,9 @@ public class LogActivity extends Activity {
             }
             return usersList;
         }
-
-
     }
 
     public class User {
-
         int _id;
         String _login;
         String _pass;
@@ -190,69 +190,6 @@ public class LogActivity extends Activity {
         startActivity(intent);
     }
 
-    protected void SavePreferences() {
-        String log = loginInput.getText().toString();
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_LOG, log);
-        editor.apply();
-    }
-
-    protected void LoadPreferences() {
-        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
-        String dataSet = data.getString("Login", null);
-        if (Objects.equals(dataSet, null)) return;
-        if (Objects.equals(dataSet, "[]")) return;
-        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
-        loginInput.setText(dataSet);
-
-        List<User> users = db.getAllUsers();
-        for (User usr : users) {
-            String log = "Id: "+usr.getID()+" ,Login: " + usr.getLogin() + " ,Password: " + usr.getPass();
-            Log.v("Loading...", log);
-        }
-    }
-
-    public void onClick(View v) {
-        int id = v.getId();
-
-        logCard = findViewById(R.id.logCard);
-        regCard = findViewById(R.id.regCard);
-        passCard = findViewById(R.id.passCard);
-        delCard = findViewById(R.id.delCard);
-
-        if (id == R.id.regSW) {
-            logCard.setVisibility(View.GONE);
-            passCard.setVisibility(View.GONE);
-            delCard.setVisibility(View.GONE);
-            regCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.loginSW) {
-            passCard.setVisibility(View.GONE);
-            regCard.setVisibility(View.GONE);
-            delCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.delUser) {
-            logCard.setVisibility(View.GONE);
-            delCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.delCancelButton) {
-            delCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.delUserButton) {
-            delCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "User deleted :(", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.changePass) {
-            logCard.setVisibility(View.GONE);
-            passCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.cancelButton) {
-            passCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.saveButton) {
-            passCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void regUser(View v) {
         int id = v.getId();
 
@@ -279,5 +216,117 @@ public class LogActivity extends Activity {
             }
             else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void savePass(View v){
+        passCard.setVisibility(View.GONE);
+        logCard.setVisibility(View.VISIBLE);
+
+        loginInput2 = findViewById(R.id.loginInput);
+        oldPassInput = findViewById(R.id.oldPassInput);
+        newPassInput = findViewById(R.id.newPassInput);
+
+        String user = loginInput2.getText().toString();
+        String password1 = oldPassInput.getText().toString();
+        String password2 = newPassInput.getText().toString();
+
+        Intent intent = new Intent(this, ListActivity.class);
+        intent.putExtra("user", user);
+
+            if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
+                Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+//            if () { //если пользователь найден
+//                //меняем пароль
+//                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+//                startActivity(intent);
+//            }
+            else Toast.makeText(this, "Несуществующий пользователь или неправильный пароль!", Toast.LENGTH_SHORT).show();
+    }
+    public void delUser(View v) {
+        int id = v.getId();
+
+        delUserButton = findViewById(R.id.delUserButton);
+        delLoginInput = findViewById(R.id.delLoginInput);
+        delPassInput = findViewById(R.id.delPassInput);
+
+        String user = delLoginInput.getText().toString();
+        String password = delPassInput.getText().toString();
+
+        if (id == R.id.delUserButton) {
+            if (user.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+//            if () { //если пользователь найден
+//                // удаляем
+//            } else
+            // несуществующий пользователь или неправильный пароль
+        }
+    }
+    protected void SavePreferences() {
+        String log = loginInput.getText().toString();
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCES_LOG, log);
+        editor.apply();
+    }
+
+    protected void LoadPreferences() {
+        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
+        String dataSet = data.getString("Login", null);
+        if (Objects.equals(dataSet, null)) return;
+        if (Objects.equals(dataSet, "[]")) return;
+        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
+        loginInput.setText(dataSet);
+
+//        List<User> users = db.getAllUsers();
+//        for (User usr : users) {
+//            String log = "Id: "+usr.getID()+" ,Login: " + usr.getLogin() + " ,Password: " + usr.getPass();
+//            Log.v("Loading...", log);
+//        }
+    }
+
+    public void onClick(View v) {
+        int id = v.getId();
+
+        logCard = findViewById(R.id.logCard);
+        regCard = findViewById(R.id.regCard);
+        passCard = findViewById(R.id.passCard);
+        delCard = findViewById(R.id.delCard);
+
+        if (id == R.id.regSW) {
+            logCard.setVisibility(View.GONE);
+            passCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.GONE);
+            regCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.loginSW) {
+            passCard.setVisibility(View.GONE);
+            regCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.delUser) {
+            logCard.setVisibility(View.GONE);
+            delCard.setVisibility(View.VISIBLE);
+            //delUser();
+        } else if (id == R.id.delCancelButton) {
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.delUserButton) {
+            delCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.changePass) {
+            logCard.setVisibility(View.GONE);
+            passCard.setVisibility(View.VISIBLE);
+        } else if (id == R.id.cancelButton) {
+            passCard.setVisibility(View.GONE);
+            logCard.setVisibility(View.VISIBLE);
+        }
+//        else if (id == R.id.saveButton) {
+//            passCard.setVisibility(View.GONE);
+//            logCard.setVisibility(View.VISIBLE);
+//        savePass();
+//        }
     }
 }
