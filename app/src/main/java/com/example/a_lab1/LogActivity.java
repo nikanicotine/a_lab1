@@ -92,13 +92,14 @@ public class LogActivity extends Activity {
             db.execSQL(CREATE_USERS_TABLE);
         }
 
+
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
             onCreate(db);
         }
 
-        public void addUser(User user) {
+        public boolean addUser(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
@@ -106,9 +107,14 @@ public class LogActivity extends Activity {
             String check = user.getLogin();
             String query = "select * from USERS where LOGIN like " + '"' + check + '"';
             Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (!count.equals("0")) {
+                return false;
+            }
             db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
             cur.close();
             db.close();
+            return true;
         }
 
         public void del(User user) {
@@ -224,11 +230,16 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else if (password1.equals(password2)) {
-            db.addUser(new User(user, password1));
-            newLoginInput.setText("");
-            regFirstPassInput.setText("");
-            regSecondPassInput.setText("");
-            startActivity(intent);
+            if (!db.addUser(new User(user, password1))) {
+                Toast.makeText(this, "Always exist!", Toast.LENGTH_SHORT).show();
+                regFirstPassInput.setText("");
+                regSecondPassInput.setText("");
+            } else {
+                newLoginInput.setText("");
+                regFirstPassInput.setText("");
+                regSecondPassInput.setText("");
+                startActivity(intent);
+            }
         } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
     }
 
