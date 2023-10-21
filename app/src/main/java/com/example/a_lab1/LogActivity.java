@@ -117,12 +117,20 @@ public class LogActivity extends Activity {
             return true;
         }
 
-        public void del(User user) {
+        public boolean del(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
             String[] delString = new String[]{user.getLogin()};
-
+            String check = user.getLogin();
+            String check1 = user.getPass();
+            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (count.equals("0") || count.equals("-1")) {
+                return false;
+            }
             db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
             db.close();
+            return true;
         }
 
         public List<User> getAllUsers() {
@@ -284,14 +292,17 @@ public class LogActivity extends Activity {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             } else {
-//                if () {
-//
-//                }
-                db.del(new User(user, password));
+                if(!db.del(new User(user, password))){
+                    Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
+                    delPassInput.setText("");
+                }else{
+                    delCard.setVisibility(View.GONE);
+                    logCard.setVisibility(View.VISIBLE);
+                    Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
+                }
+
             }
-            delCard.setVisibility(View.GONE);
-            logCard.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
+
         }
     }
 
