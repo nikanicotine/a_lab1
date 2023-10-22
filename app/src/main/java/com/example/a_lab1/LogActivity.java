@@ -1,5 +1,6 @@
 package com.example.a_lab1;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,18 +11,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ public class LogActivity extends Activity {
     EditText loginInput, passInput, newLoginInput, regFirstPassInput, regSecondPassInput,
             delLoginInput, delPassInput, loginInput2, oldPassInput, newPassInput;
     CardView logCard, regCard, passCard, delCard;
+    LinearLayout topLayout;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
     public static final String APP_PREFERENCES_LOG = "Login";
@@ -42,6 +44,7 @@ public class LogActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_act);
+
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         loginButton = findViewById(R.id.loginButton);
@@ -55,6 +58,7 @@ public class LogActivity extends Activity {
 //        super.onPause();
 //        db.deleteAll();
 //    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -108,16 +112,14 @@ public class LogActivity extends Activity {
             String query = "select * from USERS where LOGIN like " + '"' + check + '"';
             Cursor cur = db.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
-            if (!count.equals("0")) {
-                return false;
-            }
+            if (!count.equals("0")) return false;
             db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
             cur.close();
             db.close();
             return true;
         }
 
-        public boolean del(User user) {
+        public boolean delUser(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
             String[] delString = new String[]{user.getLogin()};
             String check = user.getLogin();
@@ -125,10 +127,22 @@ public class LogActivity extends Activity {
             String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
             Cursor cur = db.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
-            if (count.equals("0") || count.equals("-1")) {
-                return false;
-            }
+            if (count.equals("0") || count.equals("-1")) return false;
             db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+            db.close();
+            return true;
+        }
+
+        public boolean changePass(User user) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String[] delString = new String[]{user.getLogin()};
+            String check = user.getLogin();
+            String check1 = user.getPass();
+            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+//            if (count.equals("0") || count.equals("-1")) return false;
+//            db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
             db.close();
             return true;
         }
@@ -251,34 +265,7 @@ public class LogActivity extends Activity {
         } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
     }
 
-    public void savePass(View v) {
-        passCard.setVisibility(View.GONE);
-        logCard.setVisibility(View.VISIBLE);
-
-        loginInput2 = findViewById(R.id.loginInput);
-        oldPassInput = findViewById(R.id.oldPassInput);
-        newPassInput = findViewById(R.id.newPassInput);
-
-        String user = loginInput2.getText().toString();
-        String password1 = oldPassInput.getText().toString();
-        String password2 = newPassInput.getText().toString();
-
-        Intent intent = new Intent(this, ListActivity.class);
-        intent.putExtra("user", user);
-
-        if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
-            Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
-        }
-//            if () { //если пользователь найден
-//                //меняем пароль
-//                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
-//                startActivity(intent);
-//            }
-        else
-            Toast.makeText(this, "Несуществующий пользователь или неправильный пароль!", Toast.LENGTH_SHORT).show();
-    }
-
-    public void delUser(View v) {
+    public void del(View v) {
         int id = v.getId();
 
         delUserButton = findViewById(R.id.delUserButton);
@@ -292,18 +279,48 @@ public class LogActivity extends Activity {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             } else {
-                if(!db.del(new User(user, password))){
+                if (!db.delUser(new User(user, password))) {
                     Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
                     delPassInput.setText("");
-                }else{
+                } else {
                     delCard.setVisibility(View.GONE);
                     logCard.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "User has been deleted :(", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "User " + user + " has been deleted :(", Toast.LENGTH_SHORT).show();
                 }
-
             }
-
         }
+    }
+
+    public void savePass(View v) {
+        passCard.setVisibility(View.GONE);
+        logCard.setVisibility(View.VISIBLE);
+
+        loginInput2 = findViewById(R.id.loginInput2);
+        oldPassInput = findViewById(R.id.oldPassInput);
+        newPassInput = findViewById(R.id.newPassInput);
+
+        String user = loginInput2.getText().toString();
+        String password1 = oldPassInput.getText().toString();
+        String password2 = newPassInput.getText().toString();
+
+        if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
+            Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!db.changePass(new User(user, password2))) {
+                Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
+                oldPassInput.setText("");
+                newPassInput.setText("");
+            } else {
+                passCard.setVisibility(View.GONE);
+                logCard.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+            }
+        }
+//            if () { //если пользователь найден
+//                //меняем пароль
+//                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+//                startActivity(intent);
+//            }
     }
 
     protected void SavePreferences() {
@@ -331,6 +348,7 @@ public class LogActivity extends Activity {
     public void onClick(View v) {
         int id = v.getId();
 
+//        topLayout = findViewById(R.id.topLayout);
         logCard = findViewById(R.id.logCard);
         regCard = findViewById(R.id.regCard);
         passCard = findViewById(R.id.passCard);
@@ -346,10 +364,12 @@ public class LogActivity extends Activity {
             regCard.setVisibility(View.GONE);
             delCard.setVisibility(View.GONE);
             logCard.setVisibility(View.VISIBLE);
-        } else if (id == R.id.delUser) {
+        } else if (id == R.id.del) {
             logCard.setVisibility(View.GONE);
             delCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.delCancelButton) {
+            delLoginInput.setText("");
+            delPassInput.setText("");
             delCard.setVisibility(View.GONE);
             logCard.setVisibility(View.VISIBLE);
 //        } else if (id == R.id.delUserButton) {
@@ -360,6 +380,9 @@ public class LogActivity extends Activity {
             logCard.setVisibility(View.GONE);
             passCard.setVisibility(View.VISIBLE);
         } else if (id == R.id.cancelButton) {
+            loginInput2.setText("");
+            oldPassInput.setText("");
+            newPassInput.setText("");
             passCard.setVisibility(View.GONE);
             logCard.setVisibility(View.VISIBLE);
         }
