@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
+//import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 
@@ -38,6 +40,11 @@ public class ListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listact);
 
+        Toolbar toolbar = findViewById(R.id.materialToolbar2);
+
+        setActionBar(toolbar);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         addButton = findViewById(R.id.addButton);
         delButton = findViewById(R.id.delUserButton);
         textView = findViewById(R.id.listName);
@@ -52,6 +59,7 @@ public class ListActivity extends Activity {
             String user = arguments.getString("user");
             Toast.makeText(ListActivity.this,
                     "Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
+            toolbar.setTitle("Привет, " + user);
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, catNames);
