@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -124,7 +125,7 @@ public class LogActivity extends Activity {
             String[] delString = new String[]{user.getLogin()};
             String check = user.getLogin();
             String check1 = user.getPass();
-            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
             Cursor cur = db.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
             if (count.equals("0") || count.equals("-1")) return false;
@@ -135,14 +136,16 @@ public class LogActivity extends Activity {
 
         public boolean changePass(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String[] delString = new String[]{user.getLogin()};
+            String password2 = newPassInput.getText().toString();
             String check = user.getLogin();
             String check1 = user.getPass();
-            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
             Cursor cur = db.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
-//            if (count.equals("0") || count.equals("-1")) return false;
-//            db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+            if (count.equals("0") || count.equals("-1")) return false;
+            String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + check + '"';
+            db.execSQL(query1);
+            cur.close();
             db.close();
             return true;
         }
@@ -292,9 +295,6 @@ public class LogActivity extends Activity {
     }
 
     public void savePass(View v) {
-        passCard.setVisibility(View.GONE);
-        logCard.setVisibility(View.VISIBLE);
-
         loginInput2 = findViewById(R.id.loginInput2);
         oldPassInput = findViewById(R.id.oldPassInput);
         newPassInput = findViewById(R.id.newPassInput);
@@ -306,7 +306,7 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else {
-            if (!db.changePass(new User(user, password2))) {
+            if (!db.changePass(new User(user, password1))) {
                 Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
                 oldPassInput.setText("");
                 newPassInput.setText("");
@@ -314,13 +314,11 @@ public class LogActivity extends Activity {
                 passCard.setVisibility(View.GONE);
                 logCard.setVisibility(View.VISIBLE);
                 Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+                loginInput2.setText("");
+                oldPassInput.setText("");
+                newPassInput.setText("");
             }
         }
-//            if () { //если пользователь найден
-//                //меняем пароль
-//                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
-//                startActivity(intent);
-//            }
     }
 
     protected void SavePreferences() {
