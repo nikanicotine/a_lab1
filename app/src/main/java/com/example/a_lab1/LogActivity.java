@@ -104,6 +104,27 @@ public class LogActivity extends Activity {
             onCreate(db);
         }
 
+        public boolean sendUser(User user) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String check = user.getLogin();
+            String check1 = user.getPass();
+            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (count.equals("0") || count.equals("-1")) return false;
+            //
+            if (ponCheckBox.isChecked()) {
+                SavePreferences();
+            } else {
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putString(APP_PREFERENCES_LOG, "");
+                editor.apply();
+            }
+            cur.close();
+            db.close();
+            return true;
+        }
+
         public boolean addUser(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -125,7 +146,7 @@ public class LogActivity extends Activity {
             String[] delString = new String[]{user.getLogin()};
             String check = user.getLogin();
             String check1 = user.getPass();
-            String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
             Cursor cur = db.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
             if (count.equals("0") || count.equals("-1")) return false;
@@ -216,19 +237,15 @@ public class LogActivity extends Activity {
 
     public void sendLogin(View v) { // loginButton onClick
         ponCheckBox = findViewById(R.id.ponCheckBox);
-        if (ponCheckBox.isChecked()) {
-            SavePreferences();
-        } else {
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putString(APP_PREFERENCES_LOG, "");
-            editor.apply();
-        }
-
         String user = loginInput.getText().toString();
         String password = passInput.getText().toString();
 
         if (user.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!db.sendUser(new User(user, password))){
+            Toast.makeText(this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
 
