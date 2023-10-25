@@ -4,9 +4,14 @@ import static com.example.a_lab1.LogActivity.APP_PREFERENCES;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,7 +37,9 @@ public class ListActivity extends Activity {
     ListView listCats;
     EditText editCat;
     public static final String APP_PREFERENCES_CATS = "Cat";
+    public static final String DATABASE_NAME = "Users.db";
     SharedPreferences mSettings;
+    DatabaseHandler db1 = new DatabaseHandler(this);
 
     @SuppressLint("SetTextI18n") // ?
     @Override
@@ -57,9 +64,7 @@ public class ListActivity extends Activity {
 
         if (arguments != null) {
             String user = arguments.getString("user");
-            Toast.makeText(ListActivity.this,
-                    "Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
-            toolbar.setTitle("Привет, " + user);
+            Toast.makeText(ListActivity.this,"Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, catNames);
@@ -79,6 +84,58 @@ public class ListActivity extends Activity {
                 delButton.setEnabled(true); // TODO
             }
         });
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        db1.close();
+    }
+
+    public static final class DBContract {
+
+        private DBContract() {
+        }
+
+        public static class CatEntry implements BaseColumns {
+            public static final String TABLE_NAME = "CATS";
+            public static final String COLUMN_NAME_KEY_ID = "ID"; // _id
+            public static final String COLUMN_NAME_CAT = "NAME";
+        }
+    }
+
+    public static class DatabaseHandler extends SQLiteOpenHelper {
+
+        private static final int DATABASE_VERSION = 1;
+
+
+        public DatabaseHandler(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db3) {
+            String CREATE_CATS_TABLE = "CREATE TABLE " + ListActivity.DBContract.CatEntry.TABLE_NAME + "("
+                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+            Log.v("log", CREATE_CATS_TABLE);
+            Log.v("log", "aaaaaaaaaaaaaAAAaAAAaaaaaAAaaa");
+            db3.execSQL(CREATE_CATS_TABLE);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db1, int oldVersion, int newVersion) {
+            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
+            onCreate(db1);
+        }
+
+        public void Save(){
+            SQLiteDatabase db1 = this.getWritableDatabase();
+            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
+            onCreate(db1);
+            ContentValues values = new ContentValues();
+//            db.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+            db1.close();
+        }
     }
 
     protected void SavePreferences() {
@@ -114,6 +171,7 @@ public class ListActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        db1.Save();
         SavePreferences();
     }
 

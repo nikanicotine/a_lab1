@@ -33,7 +33,6 @@ public class LogActivity extends Activity {
     EditText loginInput, passInput, newLoginInput, regFirstPassInput, regSecondPassInput,
             delLoginInput, delPassInput, loginInput2, oldPassInput, newPassInput;
     CardView logCard, regCard, passCard, delCard;
-    LinearLayout topLayout;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
     public static final String APP_PREFERENCES_LOG = "Login";
@@ -54,7 +53,7 @@ public class LogActivity extends Activity {
         LoadPreferences();
     }
 
-    //    @Override
+//    @Override
 //    protected void onPause() {
 //        super.onPause();
 //        db.deleteAll();
@@ -66,12 +65,12 @@ public class LogActivity extends Activity {
         db.close();
     }
 
-    public final class DBContract {
+    public static final class DBContract {
 
         private DBContract() {
         }
 
-        public class UserEntry implements BaseColumns {
+        public static class UserEntry implements BaseColumns {
             public static final String TABLE_NAME = "USERS";
             public static final String COLUMN_NAME_KEY_ID = "ID"; // _id
             public static final String COLUMN_NAME_LOGIN = "LOGIN";
@@ -91,9 +90,9 @@ public class LogActivity extends Activity {
         @Override
         public void onCreate(SQLiteDatabase db) {
             String CREATE_USERS_TABLE = "CREATE TABLE " + DBContract.UserEntry.TABLE_NAME + "("
-                    + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT," + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
-
+                    + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
+            Log.v("log", CREATE_USERS_TABLE);
             db.execSQL(CREATE_USERS_TABLE);
         }
 
