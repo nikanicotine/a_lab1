@@ -64,10 +64,12 @@ public class ListActivity extends Activity {
 
         if (arguments != null) {
             String user = arguments.getString("user");
-            Toast.makeText(ListActivity.this,"Вы зашли под именем " + user, Toast.LENGTH_LONG).show();
+            Toast.makeText(ListActivity.this, "Вы зашли под именем " + user,
+                    Toast.LENGTH_LONG).show();
         }
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, catNames);
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice, catNames);
 
         listCats.setAdapter(adapter);
         LoadPreferences();
@@ -89,6 +91,7 @@ public class ListActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         db1.close();
+        Log.i("мой тег", "Произошел дестрой");
     }
 
     public static final class DBContract {
@@ -114,9 +117,10 @@ public class ListActivity extends Activity {
 
         @Override
         public void onCreate(SQLiteDatabase db3) {
-            String CREATE_CATS_TABLE = "CREATE TABLE " + ListActivity.DBContract.CatEntry.TABLE_NAME + "("
-                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+            String CREATE_CATS_TABLE = "CREATE TABLE "
+                    + ListActivity.DBContract.CatEntry.TABLE_NAME + "("
+                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
             Log.v("log", CREATE_CATS_TABLE);
             Log.v("log", "aaaaaaaaaaaaaAAAaAAAaaaaaAAaaa");
             db3.execSQL(CREATE_CATS_TABLE);
@@ -128,11 +132,12 @@ public class ListActivity extends Activity {
             onCreate(db1);
         }
 
-        public void Save(){
+        public void Save() {
             SQLiteDatabase db1 = this.getWritableDatabase();
             db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
             onCreate(db1);
             ContentValues values = new ContentValues();
+//            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, user.getLogin());
 //            db.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
             db1.close();
         }
@@ -171,7 +176,9 @@ public class ListActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("мой тег", "Пауза до сейва");
         db1.Save();
+        Log.i("мой тег", "Пауза после сейва");
         SavePreferences();
     }
 
