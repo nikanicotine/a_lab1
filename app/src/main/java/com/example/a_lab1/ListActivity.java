@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ListActivity extends Activity {
-    ArrayAdapter<String> adapter;
+    static ArrayAdapter<String> adapter;
     static ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
     Button addButton, delButton;
@@ -72,7 +73,8 @@ public class ListActivity extends Activity {
                 android.R.layout.simple_list_item_multiple_choice, catNames);
 
         listCats.setAdapter(adapter);
-        LoadPreferences();
+//        LoadPreferences();
+        db1.LoadSQL();
         delButton.setEnabled(false);
 
         listCats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -163,8 +165,8 @@ public class ListActivity extends Activity {
 
         @Override
         public void onUpgrade(SQLiteDatabase db1, int oldVersion, int newVersion) {
-            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
-            onCreate(db1);
+//            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
+//            onCreate(db1);
         }
 
         public void Open() {
@@ -181,19 +183,12 @@ public class ListActivity extends Activity {
             for (String s : cats) {
                 Save(new Cats(s));
             }
-
             Log.i("мой тег", "Пауза после сейва");
-//            ContentValues values = new ContentValues();
-//            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, cat.getName());
-//            Log.v("log", values.toString());
-//            db1.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
             db1.close();
         }
 
         public void Save(Cats cat) {
             SQLiteDatabase db1 = this.getWritableDatabase();
-//            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
-//            onCreate(db1);
             ContentValues values = new ContentValues();
             values.put(DBContract.CatEntry.COLUMN_NAME_CAT, cat.getName());
             Log.v("log", values.toString());
@@ -201,6 +196,26 @@ public class ListActivity extends Activity {
             db1.close();
         }
 
+        protected boolean LoadSQL() {
+            SQLiteDatabase db1 = this.getWritableDatabase();
+
+            String query = "select * from CATS";
+            Cursor cur = db1.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (count.equals("0")) return false;
+
+            if (cur.moveToFirst()){
+                do{
+                    @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
+                    adapter.addAll(cats);
+                    adapter.notifyDataSetChanged();
+                }while(cur.moveToNext());
+            }
+
+            cur.close();
+            db1.close();
+            return true;
+        }
     }
 
     protected void SavePreferences() {
@@ -210,17 +225,17 @@ public class ListActivity extends Activity {
         editor.apply();
     }
 
-    protected void LoadPreferences() {
-        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
-        String dataSet = data.getString("Cat", null);
-        if (Objects.equals(dataSet, null)) return;
-        if (Objects.equals(dataSet, "[]")) return;
-        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
-        String[] cats = dataSet.split(", ");
-
-        adapter.addAll(cats);
-        adapter.notifyDataSetChanged();
-    }
+//    protected void LoadPreferences() {
+//        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
+//        String dataSet = data.getString("Cat", null);
+//        if (Objects.equals(dataSet, null)) return;
+//        if (Objects.equals(dataSet, "[]")) return;
+//        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
+//        String[] cats = dataSet.split(", ");
+//
+//        adapter.addAll(cats);
+//        adapter.notifyDataSetChanged();
+//    }
 
     @SuppressLint("NonConstantResourceId")
     public void onClick(View v) {
@@ -237,8 +252,7 @@ public class ListActivity extends Activity {
     protected void onPause() {
         super.onPause();
         db1.Open();
-
-        Log.i("мой тег", "Пауза после сейва");
+        adapter.clear();
         SavePreferences();
     }
 
