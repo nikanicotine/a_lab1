@@ -30,7 +30,7 @@ import java.util.Objects;
 
 public class ListActivity extends Activity {
     ArrayAdapter<String> adapter;
-    ArrayList<String> catNames = new ArrayList<>();
+    static ArrayList<String> catNames = new ArrayList<>();
     ArrayList<String> selectedCats = new ArrayList<>();
     Button addButton, delButton;
     TextView textView;
@@ -88,6 +88,39 @@ public class ListActivity extends Activity {
         });
     }
 
+    public static class Cats {
+        int _id;
+        String _name;
+
+        public Cats() {
+        }
+
+        public Cats(int id, String name) {
+            this._id = id;
+            this._name = name;
+        }
+
+        public Cats(String name) {
+            this._name = name;
+        }
+
+        public int getID() {
+            return this._id;
+        }
+
+        public void setID(int id) {
+            this._id = id;
+        }
+
+        public String getName() {
+            return this._name;
+        }
+
+        public void setName(String name) {
+            this._name = name;
+        }
+    }
+
     protected void onDestroy() {
         super.onDestroy();
         db1.close();
@@ -101,7 +134,8 @@ public class ListActivity extends Activity {
 
         public static class CatEntry implements BaseColumns {
             public static final String TABLE_NAME = "CATS";
-            public static final String COLUMN_NAME_KEY_ID = "ID"; // _id
+            public static final String COLUMN_NAME_CAT_KEY_ID = "ID_CAT";
+            public static final String COLUMN_USER_NAME_ID = "ID_USER";
             public static final String COLUMN_NAME_CAT = "NAME";
         }
     }
@@ -119,7 +153,8 @@ public class ListActivity extends Activity {
         public void onCreate(SQLiteDatabase db3) {
             String CREATE_CATS_TABLE = "CREATE TABLE "
                     + ListActivity.DBContract.CatEntry.TABLE_NAME + "("
-                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+//                    + ListActivity.DBContract.CatEntry.COLUMN_USER_NAME_ID + " INTEGER, "
                     + ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
             Log.v("log", CREATE_CATS_TABLE);
             Log.v("log", "aaaaaaaaaaaaaAAAaAAAaaaaaAAaaa");
@@ -132,15 +167,40 @@ public class ListActivity extends Activity {
             onCreate(db1);
         }
 
-        public void Save() {
+        public void Open() {
             SQLiteDatabase db1 = this.getWritableDatabase();
             db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
             onCreate(db1);
-            ContentValues values = new ContentValues();
-//            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, user.getLogin());
-//            db.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+
+//            String cat = catNames.toString();
+            String dataSet = catNames.toString();
+            if (Objects.equals(dataSet, "[]")) return;
+            dataSet = dataSet.replaceAll("^\\[|\\]$", "");
+            String[] cats = dataSet.split(", ");
+            Log.i("мой тег", "Пауза до сейва");
+            for (String s : cats) {
+                Save(new Cats(s));
+            }
+
+            Log.i("мой тег", "Пауза после сейва");
+//            ContentValues values = new ContentValues();
+//            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, cat.getName());
+//            Log.v("log", values.toString());
+//            db1.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
             db1.close();
         }
+
+        public void Save(Cats cat) {
+            SQLiteDatabase db1 = this.getWritableDatabase();
+//            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
+//            onCreate(db1);
+            ContentValues values = new ContentValues();
+            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, cat.getName());
+            Log.v("log", values.toString());
+            db1.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+            db1.close();
+        }
+
     }
 
     protected void SavePreferences() {
@@ -176,8 +236,8 @@ public class ListActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("мой тег", "Пауза до сейва");
-        db1.Save();
+        db1.Open();
+
         Log.i("мой тег", "Пауза после сейва");
         SavePreferences();
     }
