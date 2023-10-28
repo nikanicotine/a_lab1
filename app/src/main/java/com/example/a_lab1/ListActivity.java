@@ -73,7 +73,7 @@ public class ListActivity extends Activity {
                 android.R.layout.simple_list_item_multiple_choice, catNames);
 
         listCats.setAdapter(adapter);
-//        LoadPreferences();
+
         db1.LoadSQL();
         delButton.setEnabled(false);
 
@@ -198,7 +198,9 @@ public class ListActivity extends Activity {
 
         protected boolean LoadSQL() {
             SQLiteDatabase db1 = this.getWritableDatabase();
-
+            if(db1 == null){
+                Open();
+            }
             String query = "select * from CATS";
             Cursor cur = db1.rawQuery(query, null);
             String count = String.valueOf(cur.getCount());
