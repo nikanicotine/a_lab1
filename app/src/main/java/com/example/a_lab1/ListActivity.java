@@ -1,7 +1,8 @@
 package com.example.a_lab1;
 
-import static com.example.a_lab1.ListActivity.DATABASE_NAME;
 import static com.example.a_lab1.LogActivity.APP_PREFERENCES;
+import static com.example.a_lab1.LogActivity.DatabaseHandler.DATABASE_VERSION;
+import static com.example.a_lab1.LogActivity.DatabaseHandler.DATABASE_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -39,8 +40,13 @@ public class ListActivity extends Activity {
     ListView listCats;
     EditText editCat;
     public static final String APP_PREFERENCES_CATS = "Cat";
-    public static final String DATABASE_NAME = "Users.db";
+//    public static final String DATABASE_NAME = "Users.db";
+
+    //    private static final int DATABASE_VERSION = 1;
     SharedPreferences mSettings;
+
+    ListActivity.DatabaseHandler db = new ListActivity.DatabaseHandler(this);
+
 
     @SuppressLint("SetTextI18n") // ?
     @Override
@@ -122,6 +128,39 @@ public class ListActivity extends Activity {
         }
     }
 
+    public static class DatabaseHandler extends SQLiteOpenHelper {
+
+        public DatabaseHandler(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
+
+        public void saveCat(String cat) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT, cat);
+            db.insert(LogActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+            db.close();
+        }
+
+        public void delCat(String cat) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String[] delString = new String[]{cat};
+            db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME, LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
+            db.close();
+        }
+    }
+
+
     protected void onDestroy() {
         super.onDestroy();
         Log.i("мой тег", "Произошел дестрой");
@@ -141,14 +180,35 @@ public class ListActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("не мой тег", "Произошел пауз");
+//        db.saveList();
         adapter.clear();
     }
 
     public void add(View view) {
         editCat = findViewById(R.id.editText);
         String cat = editCat.getText().toString();
+        int count = -1;
         if (!cat.isEmpty()) {
+            for (int i = 0; i <= adapter.getCount(); ++i) {
+                if (!adapter.isEmpty()) {
+                    if (cat.equals(adapter.getItem(i))) {
+                        count += 2;
+                        break;
+                    }
+                } else {
+                    adapter.add(cat);
+                    db.saveCat(cat);
+                    editCat.setText("");
+                    adapter.notifyDataSetChanged();
+                    count++;
+                    break;
+                }
+            }
+        }
+        if (count != 0) {
             adapter.add(cat);
+            db.saveCat(cat);
             editCat.setText("");
             adapter.notifyDataSetChanged();
         }
@@ -157,6 +217,7 @@ public class ListActivity extends Activity {
     public void remove(View view, ListView listView) {
         for (int i = 0; i < selectedCats.size(); i++) {
             adapter.remove(selectedCats.get(i));
+            db.delCat(selectedCats.get(i));
         }
         listView.clearChoices();
         selectedCats.clear();
