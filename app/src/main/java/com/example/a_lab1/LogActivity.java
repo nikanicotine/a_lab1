@@ -76,6 +76,12 @@ public class LogActivity extends Activity {
             public static final String COLUMN_NAME_LOGIN = "LOGIN";
             public static final String COLUMN_NAME_PASS = "PASS";
         }
+
+        public static class CatEntry implements BaseColumns {
+            public static final String TABLE_NAME = "CATS";
+            public static final String COLUMN_NAME_CAT_KEY_ID = "ID_CAT";
+            public static final String COLUMN_NAME_CAT = "NAME";
+        }
     }
 
     public class DatabaseHandler extends SQLiteOpenHelper {
@@ -94,12 +100,19 @@ public class LogActivity extends Activity {
                     DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
             Log.v("log", CREATE_USERS_TABLE);
             db.execSQL(CREATE_USERS_TABLE);
+
+            String CREATE_CATS_TABLE = "CREATE TABLE "
+                    + DBContract.CatEntry.TABLE_NAME + "("
+                    + DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+            db.execSQL(CREATE_CATS_TABLE);
         }
 
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + DBContract.CatEntry.TABLE_NAME);
             onCreate(db);
         }
 

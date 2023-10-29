@@ -1,5 +1,6 @@
 package com.example.a_lab1;
 
+import static com.example.a_lab1.ListActivity.DATABASE_NAME;
 import static com.example.a_lab1.LogActivity.APP_PREFERENCES;
 
 import android.annotation.SuppressLint;
@@ -40,7 +41,6 @@ public class ListActivity extends Activity {
     public static final String APP_PREFERENCES_CATS = "Cat";
     public static final String DATABASE_NAME = "Users.db";
     SharedPreferences mSettings;
-    DatabaseHandler db1 = new DatabaseHandler(this);
 
     @SuppressLint("SetTextI18n") // ?
     @Override
@@ -73,8 +73,7 @@ public class ListActivity extends Activity {
                 android.R.layout.simple_list_item_multiple_choice, catNames);
 
         listCats.setAdapter(adapter);
-//        LoadPreferences();
-        db1.LoadSQL();
+
         delButton.setEnabled(false);
 
         listCats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -125,117 +124,8 @@ public class ListActivity extends Activity {
 
     protected void onDestroy() {
         super.onDestroy();
-        db1.close();
         Log.i("мой тег", "Произошел дестрой");
     }
-
-    public static final class DBContract {
-
-        private DBContract() {
-        }
-
-        public static class CatEntry implements BaseColumns {
-            public static final String TABLE_NAME = "CATS";
-            public static final String COLUMN_NAME_CAT_KEY_ID = "ID_CAT";
-            public static final String COLUMN_USER_NAME_ID = "ID_USER";
-            public static final String COLUMN_NAME_CAT = "NAME";
-        }
-    }
-
-    public static class DatabaseHandler extends SQLiteOpenHelper {
-
-        private static final int DATABASE_VERSION = 1;
-
-
-        public DatabaseHandler(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db3) {
-            String CREATE_CATS_TABLE = "CREATE TABLE "
-                    + ListActivity.DBContract.CatEntry.TABLE_NAME + "("
-                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-//                    + ListActivity.DBContract.CatEntry.COLUMN_USER_NAME_ID + " INTEGER, "
-                    + ListActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
-            Log.v("log", CREATE_CATS_TABLE);
-            Log.v("log", "aaaaaaaaaaaaaAAAaAAAaaaaaAAaaa");
-            db3.execSQL(CREATE_CATS_TABLE);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db1, int oldVersion, int newVersion) {
-//            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
-//            onCreate(db1);
-        }
-
-        public void Open() {
-            SQLiteDatabase db1 = this.getWritableDatabase();
-            db1.execSQL("DROP TABLE IF EXISTS " + ListActivity.DBContract.CatEntry.TABLE_NAME);
-            onCreate(db1);
-
-//            String cat = catNames.toString();
-            String dataSet = catNames.toString();
-            if (Objects.equals(dataSet, "[]")) return;
-            dataSet = dataSet.replaceAll("^\\[|\\]$", "");
-            String[] cats = dataSet.split(", ");
-            Log.i("мой тег", "Пауза до сейва");
-            for (String s : cats) {
-                Save(new Cats(s));
-            }
-            Log.i("мой тег", "Пауза после сейва");
-            db1.close();
-        }
-
-        public void Save(Cats cat) {
-            SQLiteDatabase db1 = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(DBContract.CatEntry.COLUMN_NAME_CAT, cat.getName());
-            Log.v("log", values.toString());
-            db1.insert(ListActivity.DBContract.CatEntry.TABLE_NAME, null, values);
-            db1.close();
-        }
-
-        protected boolean LoadSQL() {
-            SQLiteDatabase db1 = this.getWritableDatabase();
-
-            String query = "select * from CATS";
-            Cursor cur = db1.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (count.equals("0")) return false;
-
-            if (cur.moveToFirst()){
-                do{
-                    @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
-                    adapter.addAll(cats);
-                    adapter.notifyDataSetChanged();
-                }while(cur.moveToNext());
-            }
-
-            cur.close();
-            db1.close();
-            return true;
-        }
-    }
-
-    protected void SavePreferences() {
-        String cat = catNames.toString();
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putString(APP_PREFERENCES_CATS, cat);
-        editor.apply();
-    }
-
-//    protected void LoadPreferences() {
-//        SharedPreferences data = this.getSharedPreferences("mysettingsLog", MODE_PRIVATE);
-//        String dataSet = data.getString("Cat", null);
-//        if (Objects.equals(dataSet, null)) return;
-//        if (Objects.equals(dataSet, "[]")) return;
-//        dataSet = dataSet.replaceAll("^\\[|\\]$", "");
-//        String[] cats = dataSet.split(", ");
-//
-//        adapter.addAll(cats);
-//        adapter.notifyDataSetChanged();
-//    }
 
     @SuppressLint("NonConstantResourceId")
     public void onClick(View v) {
@@ -251,9 +141,7 @@ public class ListActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        db1.Open();
         adapter.clear();
-        SavePreferences();
     }
 
     public void add(View view) {
