@@ -95,25 +95,31 @@ public class LogActivity extends Activity {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            String CREATE_USERS_TABLE = "CREATE TABLE " + DBContract.UserEntry.TABLE_NAME + "("
-                    + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
-            Log.v("log", CREATE_USERS_TABLE);
-            db.execSQL(CREATE_USERS_TABLE);
+            new Thread(
+                    () -> {
+                        String CREATE_USERS_TABLE = "CREATE TABLE " + DBContract.UserEntry.TABLE_NAME + "("
+                                + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
+                        Log.v("log", CREATE_USERS_TABLE);
+                        db.execSQL(CREATE_USERS_TABLE);
 
-            String CREATE_CATS_TABLE = "CREATE TABLE "
-                    + DBContract.CatEntry.TABLE_NAME + "("
-                    + DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
-            db.execSQL(CREATE_CATS_TABLE);
+                        String CREATE_CATS_TABLE = "CREATE TABLE "
+                                + DBContract.CatEntry.TABLE_NAME + "("
+                                + DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                + DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+                        db.execSQL(CREATE_CATS_TABLE);
+                    }).start();
         }
 
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + DBContract.CatEntry.TABLE_NAME);
-            onCreate(db);
+            new Thread(
+                    () -> {
+                        db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
+                        db.execSQL("DROP TABLE IF EXISTS " + DBContract.CatEntry.TABLE_NAME);
+                        onCreate(db);
+                    }).start();
         }
 
         public boolean sendUser(User user) {
@@ -183,24 +189,6 @@ public class LogActivity extends Activity {
             return true;
         }
 
-        public List<User> getAllUsers() {
-            List<User> usersList = new ArrayList<User>();
-            String selectQuery = "SELECT  * FROM " + DBContract.UserEntry.TABLE_NAME;
-
-            SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery(selectQuery, null);
-
-            if (cursor.moveToFirst()) {
-                do {
-                    User user = new User();
-                    user.setID(Integer.parseInt(cursor.getString(0)));
-                    user.setLogin(cursor.getString(1));
-                    user.setPass(cursor.getString(2));
-                    usersList.add(user);
-                } while (cursor.moveToNext());
-            }
-            return usersList;
-        }
     }
 
     public class User {
@@ -256,7 +244,7 @@ public class LogActivity extends Activity {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(!db.sendUser(new User(user, password))){
+        if (!db.sendUser(new User(user, password))) {
             Toast.makeText(this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
             return;
         }

@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +28,6 @@ import android.widget.Toolbar;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ListActivity extends Activity {
     static ArrayAdapter<String> adapter;
@@ -128,6 +126,24 @@ public class ListActivity extends Activity {
         }
     }
 
+    public static class CallBack<T> {
+
+        public void onSuccess() {
+        }
+
+        public void onSuccess(T result) {
+        }
+
+        public void onFail(String message) {
+
+        }
+
+        public void onFailure(T result) {
+
+        }
+
+    }
+
     public static class DatabaseHandler extends SQLiteOpenHelper {
 
         public DatabaseHandler(Context context) {
@@ -145,39 +161,48 @@ public class ListActivity extends Activity {
         }
 
         public void saveCat(String cat) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT, cat);
-            db.insert(LogActivity.DBContract.CatEntry.TABLE_NAME, null, values);
-            db.close();
+            new Thread(
+                    () -> {
+                        SQLiteDatabase db = getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put(LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT, cat);
+                        db.insert(LogActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+                        db.close();
+
+                    }).start();
         }
 
         public void delCat(String cat) {
-            SQLiteDatabase db = this.getWritableDatabase();
-            String[] delString = new String[]{cat};
-            db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME, LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
-            db.close();
+            new Thread(
+                    () -> {
+                        SQLiteDatabase db = this.getWritableDatabase();
+                        String[] delString = new String[]{cat};
+                        db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME,
+                                LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
+                        db.close();
+                    }).start();
         }
 
-        protected boolean LoadSQL() {
-            SQLiteDatabase db = this.getWritableDatabase();
+        protected void LoadSQL(final CallBack callBack) {
+            new Thread(
+                    () -> {
+                        SQLiteDatabase db = this.getWritableDatabase();
+                        String query = "select * from CATS";
+                        Cursor cur = db.rawQuery(query, null);
+                        String count = String.valueOf(cur.getCount());
+                        if (count.equals("0")) callBack.onFail("false");
+                        if (cur.moveToFirst()) {
+                            do {
+                                @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
+                                adapter.addAll(cats);
+                                adapter.notifyDataSetChanged();
+                            } while (cur.moveToNext());
+                        }
 
-            String query = "select * from CATS";
-            Cursor cur = db.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (count.equals("0")) return false;
-
-            if (cur.moveToFirst()) {
-                do {
-                    @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
-                    adapter.addAll(cats);
-                    adapter.notifyDataSetChanged();
-                } while (cur.moveToNext());
-            }
-
-            cur.close();
-            db.close();
-            return true;
+                        cur.close();
+                        db.close();
+                        callBack.onSuccess();
+                    }).start();
         }
     }
 
@@ -252,6 +277,16 @@ public class ListActivity extends Activity {
     }
 
     public void load() {
-        db.LoadSQL();
+        db.LoadSQL(new CallBack() {
+            @Override
+            public void onSuccess() {
+//                method(true);
+            }
+
+            @Override
+            public void onFail(String error) {
+//                method(false);
+            }
+        });
     }
 }
