@@ -188,25 +188,29 @@ public class ListActivity extends Activity {
     public void add(View view) {
         editCat = findViewById(R.id.editText);
         String cat = editCat.getText().toString();
-        int count = -1;
+        int pos = -1;
+        boolean sov = false;
         if (!cat.isEmpty()) {
-            for (int i = 0; i <= adapter.getCount(); ++i) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                pos++;
                 if (!adapter.isEmpty()) {
-                    if (cat.equals(adapter.getItem(i))) {
-                        count += 2;
+                    if (cat.equals(adapter.getItem(pos))) {
+                        editCat.setText("");
+                        Toast.makeText(ListActivity.this, "Кот должен быть уникален",
+                                Toast.LENGTH_LONG).show();
+                        sov = true;
                         break;
                     }
-                } else {
-                    adapter.add(cat);
-                    db.saveCat(cat);
-                    editCat.setText("");
-                    adapter.notifyDataSetChanged();
-                    count++;
-                    break;
                 }
             }
         }
-        if (count != 0) {
+        if (pos == -1) {
+            adapter.add(cat);
+            db.saveCat(cat);
+            editCat.setText("");
+            adapter.notifyDataSetChanged();
+        }
+        if(!sov && pos + 1 == adapter.getCount()){
             adapter.add(cat);
             db.saveCat(cat);
             editCat.setText("");
