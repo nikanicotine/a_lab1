@@ -79,7 +79,7 @@ public class ListActivity extends Activity {
                 android.R.layout.simple_list_item_multiple_choice, catNames);
 
         listCats.setAdapter(adapter);
-
+        load();
         delButton.setEnabled(false);
 
         listCats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -158,6 +158,27 @@ public class ListActivity extends Activity {
             db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME, LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
             db.close();
         }
+
+        protected boolean LoadSQL() {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String query = "select * from CATS";
+            Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (count.equals("0")) return false;
+
+            if (cur.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
+                    adapter.addAll(cats);
+                    adapter.notifyDataSetChanged();
+                } while (cur.moveToNext());
+            }
+
+            cur.close();
+            db.close();
+            return true;
+        }
     }
 
 
@@ -210,7 +231,7 @@ public class ListActivity extends Activity {
             editCat.setText("");
             adapter.notifyDataSetChanged();
         }
-        if(!sov && pos + 1 == adapter.getCount()){
+        if (!sov && pos + 1 == adapter.getCount()) {
             adapter.add(cat);
             db.saveCat(cat);
             editCat.setText("");
@@ -228,5 +249,9 @@ public class ListActivity extends Activity {
         adapter.notifyDataSetChanged();
         Toast.makeText(ListActivity.this,
                 "Выбранные котики удалены", Toast.LENGTH_SHORT).show();
+    }
+
+    public void load() {
+        db.LoadSQL();
     }
 }
