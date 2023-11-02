@@ -148,52 +148,60 @@ public class LogActivity extends Activity {
             return true;
         }
 
-        public boolean addUser(User user) {
+        public boolean addUser(User user, final CallBack callBack) {
             SQLiteDatabase db = this.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
-            values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
-            String check = user.getLogin();
-            String query = "select * from USERS where LOGIN like " + '"' + check + '"';
-            Cursor cur = db.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (!count.equals("0")) return false;
-            db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
-            cur.close();
-            db.close();
+            new Thread(
+                    () -> {
+                        ContentValues values = new ContentValues();
+                        values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
+                        values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
+                        String check = user.getLogin();
+                        String query = "select * from USERS where LOGIN like " + '"' + check + '"';
+                        Cursor cur = db.rawQuery(query, null);
+                        String count = String.valueOf(cur.getCount());
+                        if (!count.equals("0")) callBack.onFail("fu");
+                        db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
+                        cur.close();
+                        db.close();
+                    }).start();
             return true;
         }
 
-        public boolean delUser(User user) {
+        public boolean delUser(User user, final CallBack callBack) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String[] delString = new String[]{user.getLogin()};
-            String check = user.getLogin();
-            String check1 = user.getPass();
-            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-            Cursor cur = db.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (count.equals("0") || count.equals("-1")) return false;
-            db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
-            db.close();
+            new Thread(
+                    () -> {
+                        String[] delString = new String[]{user.getLogin()};
+                        String check = user.getLogin();
+                        String check1 = user.getPass();
+                        String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+                        Cursor cur = db.rawQuery(query, null);
+                        String count = String.valueOf(cur.getCount());
+                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
+                        db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+                        db.close();
+                    }).start();
             return true;
         }
 
-        public boolean changePass(User user) {
+        public boolean changePass(User user, final CallBack callBack) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String password2 = newPassInput.getText().toString();
-            String check = user.getLogin();
-            String check1 = user.getPass();
-            String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-            Cursor cur = db.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (count.equals("0") || count.equals("-1")) return false;
-            String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + check + '"';
-            db.execSQL(query1);
-            cur.close();
-            db.close();
+            new Thread(
+                    () -> {
+                        String password2 = newPassInput.getText().toString();
+                        String check = user.getLogin();
+                        String check1 = user.getPass();
+                        String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+                        Cursor cur = db.rawQuery(query, null);
+                        String count = String.valueOf(cur.getCount());
+                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
+                        String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + check + '"';
+                        db.execSQL(query1);
+                        cur.close();
+                        db.close();
+                    }).start();
             return true;
         }
-
     }
 
     public class User {
@@ -305,7 +313,17 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else if (password1.equals(password2)) {
-            if (!db.addUser(new User(user, password1))) {
+            if (!db.addUser(new User(user, password1), new CallBack() {
+                @Override
+                public void onSuccess() {
+//                method(true);
+                }
+
+                @Override
+                public void onFail(String error) {
+//                method(false);
+                }
+            })) {
                 Toast.makeText(this, "Always exist!", Toast.LENGTH_SHORT).show();
                 regFirstPassInput.setText("");
                 regSecondPassInput.setText("");
@@ -332,7 +350,17 @@ public class LogActivity extends Activity {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             } else {
-                if (!db.delUser(new User(user, password))) {
+                if (!db.delUser(new User(user, password), new CallBack() {
+                    @Override
+                    public void onSuccess() {
+//                method(true);
+                    }
+
+                    @Override
+                    public void onFail(String error) {
+//                method(false);
+                    }
+                })) {
                     Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
                     delPassInput.setText("");
                 } else {
@@ -356,7 +384,17 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else {
-            if (!db.changePass(new User(user, password1))) {
+            if (!db.changePass(new User(user, password1), new CallBack() {
+                @Override
+                public void onSuccess() {
+//                method(true);
+                }
+
+                @Override
+                public void onFail(String error) {
+//                method(false);
+                }
+            })) {
                 Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
                 oldPassInput.setText("");
                 newPassInput.setText("");
