@@ -122,24 +122,29 @@ public class LogActivity extends Activity {
                     }).start();
         }
 
-        public boolean sendUser(User user) {
+        public boolean sendUser(User user, final CallBack callBack) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String check = user.getLogin();
-            String check1 = user.getPass();
-            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-            Cursor cur = db.rawQuery(query, null);
-            String count = String.valueOf(cur.getCount());
-            if (count.equals("0") || count.equals("-1")) return false;
-            //
-            if (ponCheckBox.isChecked()) {
-                SavePreferences();
-            } else {
-                SharedPreferences.Editor editor = mSettings.edit();
-                editor.putString(APP_PREFERENCES_LOG, "");
-                editor.apply();
-            }
-            cur.close();
-            db.close();
+            new Thread(
+                    () -> {
+                        String check = user.getLogin();
+                        String check1 = user.getPass();
+                        String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+                        Cursor cur = db.rawQuery(query, null);
+                        String count = String.valueOf(cur.getCount());
+                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
+                        cur.close();
+
+                        //
+                        if (ponCheckBox.isChecked()) {
+                            SavePreferences();
+                        } else {
+                            SharedPreferences.Editor editor = mSettings.edit();
+                            editor.putString(APP_PREFERENCES_LOG, "");
+                            editor.apply();
+                        }
+
+                        db.close();
+                    }).start();
             return true;
         }
 
@@ -235,6 +240,24 @@ public class LogActivity extends Activity {
         }
     }
 
+    public static class CallBack<T> {
+
+        public void onSuccess() {
+        }
+
+        public void onSuccess(T result) {
+        }
+
+        public void onFail(String message) {
+
+        }
+
+        public void onFailure(T result) {
+
+        }
+
+    }
+
     public void sendLogin(View v) { // loginButton onClick
         ponCheckBox = findViewById(R.id.ponCheckBox);
         String user = loginInput.getText().toString();
@@ -244,7 +267,17 @@ public class LogActivity extends Activity {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!db.sendUser(new User(user, password))) {
+        if (!db.sendUser(new User(user, password), new CallBack() {
+            @Override
+            public void onSuccess() {
+//                method(true);
+            }
+
+            @Override
+            public void onFail(String error) {
+//                method(false);
+            }
+        })) {
             Toast.makeText(this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
