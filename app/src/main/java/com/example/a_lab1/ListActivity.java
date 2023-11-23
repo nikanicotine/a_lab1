@@ -1,8 +1,8 @@
 package com.example.a_lab1;
 
 import static com.example.a_lab1.LogActivity.APP_PREFERENCES;
-import static com.example.a_lab1.LogActivity.DatabaseHandler.DATABASE_VERSION;
-import static com.example.a_lab1.LogActivity.DatabaseHandler.DATABASE_NAME;
+import static com.example.a_lab1.LogActivity.DatabaseHandlerUser.DATABASE_VERSION;
+import static com.example.a_lab1.LogActivity.DatabaseHandlerUser.DATABASE_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -43,7 +43,7 @@ public class ListActivity extends Activity {
     //    private static final int DATABASE_VERSION = 1;
     SharedPreferences mSettings;
 
-    ListActivity.DatabaseHandler db = new ListActivity.DatabaseHandler(this);
+    DatabaseHandlerCat db = new DatabaseHandlerCat(this);
 
 
     @SuppressLint("SetTextI18n") // ?
@@ -144,9 +144,9 @@ public class ListActivity extends Activity {
 
     }
 
-    public static class DatabaseHandler extends SQLiteOpenHelper {
+    public static class DatabaseHandlerCat extends SQLiteOpenHelper {
 
-        public DatabaseHandler(Context context) {
+        public DatabaseHandlerCat(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
@@ -161,48 +161,41 @@ public class ListActivity extends Activity {
         }
 
         public void saveCat(String cat) {
-            new Thread(
-                    () -> {
-                        SQLiteDatabase db = getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put(LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT, cat);
-                        db.insert(LogActivity.DBContract.CatEntry.TABLE_NAME, null, values);
-                        db.close();
+            SQLiteDatabase db = getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT, cat);
+            db.insert(LogActivity.DBContract.CatEntry.TABLE_NAME, null, values);
+            db.close();
 
-                    }).start();
         }
 
         public void delCat(String cat) {
-            new Thread(
-                    () -> {
-                        SQLiteDatabase db = this.getWritableDatabase();
-                        String[] delString = new String[]{cat};
-                        db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME,
-                                LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
-                        db.close();
-                    }).start();
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            String[] delString = new String[]{cat};
+            db.delete(LogActivity.DBContract.CatEntry.TABLE_NAME,
+                    LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + "=?", delString);
+            db.close();
         }
 
-        protected void LoadSQL(final CallBack callBack) {
-            new Thread(
-                    () -> {
-                        SQLiteDatabase db = this.getWritableDatabase();
-                        String query = "select * from CATS";
-                        Cursor cur = db.rawQuery(query, null);
-                        String count = String.valueOf(cur.getCount());
-                        if (count.equals("0")) callBack.onFail("false");
-                        if (cur.moveToFirst()) {
-                            do {
-                                @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
-                                adapter.addAll(cats);
-                                adapter.notifyDataSetChanged();
-                            } while (cur.moveToNext());
-                        }
+        protected boolean LoadSQL() {
 
-                        cur.close();
-                        db.close();
-                        callBack.onSuccess();
-                    }).start();
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "select * from CATS";
+            Cursor cur = db.rawQuery(query, null);
+            String count = String.valueOf(cur.getCount());
+            if (count.equals("0")) return false;
+            if (cur.moveToFirst()) {
+                do {
+                    @SuppressLint("Range") String cats = cur.getString(cur.getColumnIndex("NAME"));
+                    adapter.addAll(cats);
+                    adapter.notifyDataSetChanged();
+                } while (cur.moveToNext());
+            }
+
+            cur.close();
+            db.close();
+            return true;
         }
     }
 
@@ -277,16 +270,6 @@ public class ListActivity extends Activity {
     }
 
     public void load() {
-        db.LoadSQL(new CallBack() {
-            @Override
-            public void onSuccess() {
-//                method(true);
-            }
-
-            @Override
-            public void onFail(String error) {
-//                method(false);
-            }
-        });
+        db.LoadSQL();
     }
 }

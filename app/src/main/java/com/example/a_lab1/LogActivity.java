@@ -1,6 +1,7 @@
 package com.example.a_lab1;
 
-import android.app.ActionBar;
+import static java.lang.Boolean.TRUE;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,35 +11,98 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class LogActivity extends Activity {
     Button loginButton, regNewUserButton, delUserButton;
-    CheckBox ponCheckBox;
-    EditText loginInput, passInput, newLoginInput, regFirstPassInput, regSecondPassInput,
-            delLoginInput, delPassInput, loginInput2, oldPassInput, newPassInput;
+    static CheckBox ponCheckBox;
+    static EditText loginInput;
+    EditText passInput;
+    EditText newLoginInput;
+    EditText regFirstPassInput;
+    EditText regSecondPassInput;
+    EditText delLoginInput;
+    EditText delPassInput;
+    EditText loginInput2;
+    EditText oldPassInput;
+    static EditText newPassInput;
     CardView logCard, regCard, passCard, delCard;
 
     public static final String APP_PREFERENCES = "mysettingsLog";
     public static final String APP_PREFERENCES_LOG = "Login";
 
-    SharedPreferences mSettings;
-    DatabaseHandler db = new DatabaseHandler(this);
+    static SharedPreferences mSettings;
+    DatabaseHandlerUser db = new DatabaseHandlerUser(this);
+
+    final Looper looper = Looper.getMainLooper();
+
+    final Handler handler = new Handler(looper) {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.sendingUid == 1) {
+                if (msg.obj == TRUE) {
+                    Intent intent = new Intent(LogActivity.this, ListActivity.class);
+                    intent.putExtra("user", loginInput.getText().toString());
+                    startActivity(intent);
+                } else
+                    Toast.makeText(LogActivity.this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
+                    // возможно нужно еще раз вызвать создание потока
+            }
+
+            if (msg.sendingUid == 2) {
+                if (msg.obj == TRUE) {
+                    newLoginInput.setText("");
+                    regFirstPassInput.setText("");
+                    regSecondPassInput.setText("");
+                    Intent intent = new Intent(LogActivity.this, ListActivity.class);
+                    intent.putExtra("user", newLoginInput.getText().toString());
+                    startActivity(intent);
+                } else{
+                    Toast.makeText(LogActivity.this, "Always exist!", Toast.LENGTH_SHORT).show();
+                    regFirstPassInput.setText("");
+                    regSecondPassInput.setText("");
+                }
+            }
+            if (msg.sendingUid == 3) {
+                if (msg.obj == TRUE) {
+                    delCard.setVisibility(View.GONE);
+                    logCard.setVisibility(View.VISIBLE);
+                    Toast.makeText(LogActivity.this, "User " + delLoginInput.getText().toString() + " has been deleted :(", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(LogActivity.this, "Not found!", Toast.LENGTH_SHORT).show();
+                    delPassInput.setText("");
+                }
+            }
+            if (msg.sendingUid == 4) {
+                if (msg.obj == TRUE) {
+                    passCard.setVisibility(View.GONE);
+                    logCard.setVisibility(View.VISIBLE);
+                    Toast.makeText(LogActivity.this, "Password changed (:", Toast.LENGTH_SHORT).show();
+                    loginInput2.setText("");
+                } else{
+                    Toast.makeText(LogActivity.this, "Not found!", Toast.LENGTH_SHORT).show();
+                }
+                oldPassInput.setText("");
+                newPassInput.setText("");
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,12 +116,6 @@ public class LogActivity extends Activity {
         passInput = findViewById(R.id.passInput);
         LoadPreferences();
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        db.deleteAll();
-//    }
 
     @Override
     protected void onDestroy() {
@@ -84,127 +142,114 @@ public class LogActivity extends Activity {
         }
     }
 
-    public class DatabaseHandler extends SQLiteOpenHelper {
+    public static class DatabaseHandlerUser extends SQLiteOpenHelper {
 
         static final int DATABASE_VERSION = 1;
         static final String DATABASE_NAME = "Users.db";
 
-        public DatabaseHandler(Context context) {
+        public DatabaseHandlerUser(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            new Thread(
-                    () -> {
-                        String CREATE_USERS_TABLE = "CREATE TABLE " + DBContract.UserEntry.TABLE_NAME + "("
-                                + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
-                        Log.v("log", CREATE_USERS_TABLE);
-                        db.execSQL(CREATE_USERS_TABLE);
+            String CREATE_USERS_TABLE = "CREATE TABLE " + DBContract.UserEntry.TABLE_NAME + "("
+                    + DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
+            Log.v("log", CREATE_USERS_TABLE);
+            db.execSQL(CREATE_USERS_TABLE);
 
-                        String CREATE_CATS_TABLE = "CREATE TABLE "
-                                + DBContract.CatEntry.TABLE_NAME + "("
-                                + DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                + DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
-                        db.execSQL(CREATE_CATS_TABLE);
-                    }).start();
+            String CREATE_CATS_TABLE = "CREATE TABLE "
+                    + DBContract.CatEntry.TABLE_NAME + "("
+                    + DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+            db.execSQL(CREATE_CATS_TABLE);
         }
 
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            new Thread(
-                    () -> {
-                        db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
-                        db.execSQL("DROP TABLE IF EXISTS " + DBContract.CatEntry.TABLE_NAME);
-                        onCreate(db);
-                    }).start();
+            db.execSQL("DROP TABLE IF EXISTS " + DBContract.UserEntry.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + DBContract.CatEntry.TABLE_NAME);
+            onCreate(db);
         }
 
-        public boolean sendUser(User user, final CallBack callBack) {
+//        public boolean sendUser(User user) {
+//            SQLiteDatabase db = this.getWritableDatabase();
+//            String check = user.getLogin();
+//            String check1 = user.getPass();
+//            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+//            Cursor cur = db.rawQuery(query, null);
+//            String count = String.valueOf(cur.getCount());
+//            if (count.equals("0") || count.equals("-1")) return false;
+//            cur.close();
+//
+//            //
+//            if (ponCheckBox.isChecked()) {
+//                SavePreferences();
+//            } else {
+//                SharedPreferences.Editor editor = mSettings.edit();
+//                editor.putString(APP_PREFERENCES_LOG, "");
+//                editor.apply();
+//            }
+//
+//            db.close();
+//            return true;
+//        }
+
+        public boolean checkUser(String userLogin) {
             SQLiteDatabase db = this.getWritableDatabase();
-            new Thread(
-                    () -> {
-                        String check = user.getLogin();
-                        String check1 = user.getPass();
-                        String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-                        Cursor cur = db.rawQuery(query, null);
-                        String count = String.valueOf(cur.getCount());
-                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
-                        cur.close();
-
-                        //
-                        if (ponCheckBox.isChecked()) {
-                            SavePreferences();
-                        } else {
-                            SharedPreferences.Editor editor = mSettings.edit();
-                            editor.putString(APP_PREFERENCES_LOG, "");
-                            editor.apply();
-                        }
-
-                        db.close();
-                    }).start();
-            return true;
+            String selectQuery = "SELECT  * FROM " + DBContract.UserEntry.TABLE_NAME + " WHERE login = '" + userLogin + "'";
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst())
+                return true;
+            else
+                return false;
         }
 
-        public boolean addUser(User user, final CallBack callBack) {
+        public void addUser(User user) {
             SQLiteDatabase db = this.getWritableDatabase();
-            new Thread(
-                    () -> {
-                        ContentValues values = new ContentValues();
-                        values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
-                        values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
-                        String check = user.getLogin();
-                        String query = "select * from USERS where LOGIN like " + '"' + check + '"';
-                        Cursor cur = db.rawQuery(query, null);
-                        String count = String.valueOf(cur.getCount());
-                        if (!count.equals("0")) callBack.onFail("fu");
-                        db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
-                        cur.close();
-                        db.close();
-                    }).start();
-            return true;
+
+            ContentValues values = new ContentValues();
+            values.put(DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
+            values.put(DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
+
+            db.insert(DBContract.UserEntry.TABLE_NAME, null, values);
+            db.close();
         }
 
-        public boolean delUser(User user, final CallBack callBack) {
+        public void delUser(String userLogin) {
             SQLiteDatabase db = this.getWritableDatabase();
-            new Thread(
-                    () -> {
-                        String[] delString = new String[]{user.getLogin()};
-                        String check = user.getLogin();
-                        String check1 = user.getPass();
-                        String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-                        Cursor cur = db.rawQuery(query, null);
-                        String count = String.valueOf(cur.getCount());
-                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
-                        db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
-                        db.close();
-                    }).start();
-            return true;
+
+            String[] delString = new String[]{userLogin};
+            db.delete(DBContract.UserEntry.TABLE_NAME, DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+            db.close();
         }
 
-        public boolean changePass(User user, final CallBack callBack) {
+        public void changePass(String user) {
             SQLiteDatabase db = this.getWritableDatabase();
-            new Thread(
-                    () -> {
-                        String password2 = newPassInput.getText().toString();
-                        String check = user.getLogin();
-                        String check1 = user.getPass();
-                        String query = "select ID from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
-                        Cursor cur = db.rawQuery(query, null);
-                        String count = String.valueOf(cur.getCount());
-                        if (count.equals("0") || count.equals("-1")) callBack.onFail("fu");
-                        String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + check + '"';
-                        db.execSQL(query1);
-                        cur.close();
-                        db.close();
-                    }).start();
-            return true;
+
+            String password2 = newPassInput.getText().toString();
+            String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + user + '"';
+            db.execSQL(query1);
+            db.close();
+        }
+
+        public void sendUser(String user, String password) {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            if (ponCheckBox.isChecked()) {
+                SavePreferences();
+            } else {
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putString(APP_PREFERENCES_LOG, "");
+                editor.apply();
+            }
+            db.close();
         }
     }
 
-    public class User {
+    public static class User {
         int _id;
         String _login;
         String _pass;
@@ -248,24 +293,6 @@ public class LogActivity extends Activity {
         }
     }
 
-    public static class CallBack<T> {
-
-        public void onSuccess() {
-        }
-
-        public void onSuccess(T result) {
-        }
-
-        public void onFail(String message) {
-
-        }
-
-        public void onFailure(T result) {
-
-        }
-
-    }
-
     public void sendLogin(View v) { // loginButton onClick
         ponCheckBox = findViewById(R.id.ponCheckBox);
         String user = loginInput.getText().toString();
@@ -275,24 +302,27 @@ public class LogActivity extends Activity {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (!db.sendUser(new User(user, password), new CallBack() {
-            @Override
-            public void onSuccess() {
-//                method(true);
-            }
 
-            @Override
-            public void onFail(String error) {
-//                method(false);
-            }
-        })) {
-            Toast.makeText(this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        new ThreadTask(handler).sendLoginTask(user, password);
 
-        Intent intent = new Intent(this, ListActivity.class);
-        intent.putExtra("user", user);
-        startActivity(intent);
+
+//        ArrayList<String> list = new ArrayList<>();
+//        list.add(user);
+//        list.add(password);
+//
+//        Message message = Message.obtain();
+//        message.obj = list;
+//        message.sendingUid = 1;
+//        ThreadTask.handler.sendMessage(message);
+
+//        if (!db.sendUser(new User(user, password))) {
+//            Toast.makeText(this, "Wrong a username or password", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+
+//        Intent intent = new Intent(this, ListActivity.class);
+//        intent.putExtra("user", user);
+//        startActivity(intent);
     }
 
     public void regUser(View v) {
@@ -306,33 +336,35 @@ public class LogActivity extends Activity {
         String password1 = regFirstPassInput.getText().toString();
         String password2 = regSecondPassInput.getText().toString();
 
-        Intent intent = new Intent(this, ListActivity.class);
-        intent.putExtra("user", user);
+
 
 
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else if (password1.equals(password2)) {
-            if (!db.addUser(new User(user, password1), new CallBack() {
-                @Override
-                public void onSuccess() {
-//                method(true);
-                }
+            new ThreadTask(handler).regUserTask(user, password1);
 
-                @Override
-                public void onFail(String error) {
-//                method(false);
-                }
-            })) {
-                Toast.makeText(this, "Always exist!", Toast.LENGTH_SHORT).show();
-                regFirstPassInput.setText("");
-                regSecondPassInput.setText("");
-            } else {
-                newLoginInput.setText("");
-                regFirstPassInput.setText("");
-                regSecondPassInput.setText("");
-                startActivity(intent);
-            }
+//            ArrayList<String> list = new ArrayList<>();
+//            list.add(user);
+//            list.add(password1);
+//
+//            Message message = Message.obtain();
+//            message.obj = list;
+//            message.sendingUid = 2;
+//            ThreadTask.handler.sendMessage(message);
+
+//            if (!db.addUser(new User(user, password1))) {
+//                Toast.makeText(this, "Always exist!", Toast.LENGTH_SHORT).show();
+//                regFirstPassInput.setText("");
+//                regSecondPassInput.setText("");
+//            } else {
+//                newLoginInput.setText("");
+//                regFirstPassInput.setText("");
+//                regSecondPassInput.setText("");
+//                Intent intent = new Intent(this, ListActivity.class);
+//                intent.putExtra("user", user);
+//                startActivity(intent);
+//            }
         } else Toast.makeText(this, "Passwords mismatch!", Toast.LENGTH_SHORT).show();
     }
 
@@ -350,24 +382,25 @@ public class LogActivity extends Activity {
             if (user.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
             } else {
-                if (!db.delUser(new User(user, password), new CallBack() {
-                    @Override
-                    public void onSuccess() {
-//                method(true);
-                    }
+                new ThreadTask(handler).removeUserTask(user);
 
-                    @Override
-                    public void onFail(String error) {
-//                method(false);
-                    }
-                })) {
-                    Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
-                    delPassInput.setText("");
-                } else {
-                    delCard.setVisibility(View.GONE);
-                    logCard.setVisibility(View.VISIBLE);
-                    Toast.makeText(this, "User " + user + " has been deleted :(", Toast.LENGTH_SHORT).show();
-                }
+//                ArrayList<String> list = new ArrayList<>();
+//                list.add(user);
+//                list.add(password);
+//
+//                Message message = Message.obtain();
+//                message.obj = list;
+//                message.sendingUid = 3;
+//                ThreadTask.handler.sendMessage(message);
+
+//                if (!db.delUser(new User(user, password))) {
+//                    Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
+//                    delPassInput.setText("");
+//                } else {
+//                    delCard.setVisibility(View.GONE);
+//                    logCard.setVisibility(View.VISIBLE);
+//                    Toast.makeText(this, "User " + user + " has been deleted :(", Toast.LENGTH_SHORT).show();
+//                }
             }
         }
     }
@@ -384,32 +417,32 @@ public class LogActivity extends Activity {
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();
         } else {
-            if (!db.changePass(new User(user, password1), new CallBack() {
-                @Override
-                public void onSuccess() {
-//                method(true);
-                }
+            new ThreadTask(handler).savePassTask(user);
 
-                @Override
-                public void onFail(String error) {
-//                method(false);
-                }
-            })) {
-                Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
-                oldPassInput.setText("");
-                newPassInput.setText("");
-            } else {
-                passCard.setVisibility(View.GONE);
-                logCard.setVisibility(View.VISIBLE);
-                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
-                loginInput2.setText("");
-                oldPassInput.setText("");
-                newPassInput.setText("");
-            }
+//            ArrayList<String> list = new ArrayList<>();
+//            list.add(user);
+//
+//            Message message = Message.obtain();
+//            message.obj = list;
+//            message.sendingUid = 4;
+//            ThreadTask.handler.sendMessage(message);
+
+//            if (!db.changePass(new User(user, password1))) {
+//                Toast.makeText(this, "Not found!", Toast.LENGTH_SHORT).show();
+//                oldPassInput.setText("");
+//                newPassInput.setText("");
+//            } else {
+//                passCard.setVisibility(View.GONE);
+//                logCard.setVisibility(View.VISIBLE);
+//                Toast.makeText(this, "Password changed (:", Toast.LENGTH_SHORT).show();
+//                loginInput2.setText("");
+//                oldPassInput.setText("");
+//                newPassInput.setText("");
+//            }
         }
     }
 
-    protected void SavePreferences() {
+    protected static void SavePreferences() {
         String log = loginInput.getText().toString();
         SharedPreferences.Editor editor = mSettings.edit();
         editor.putString(APP_PREFERENCES_LOG, log);
