@@ -123,6 +123,133 @@ public class LogActivity extends Activity {
         db.close();
     }
 
+    public static class DB {
+        public static final class DBContract {
+
+            private DBContract() {
+            }
+
+            public static class UserEntry implements BaseColumns {
+                public static final String TABLE_NAME = "USERS";
+                public static final String COLUMN_NAME_KEY_ID = "ID"; // _id
+                public static final String COLUMN_NAME_LOGIN = "LOGIN";
+                public static final String COLUMN_NAME_PASS = "PASS";
+            }
+
+            public static class CatEntry implements BaseColumns {
+                public static final String TABLE_NAME = "CATS";
+                public static final String COLUMN_NAME_CAT_KEY_ID = "ID_CAT";
+                public static final String COLUMN_NAME_CAT = "NAME";
+            }
+        }
+
+        public static class DatabaseHandlerUser extends SQLiteOpenHelper {
+
+            static final int DATABASE_VERSION = 1;
+            static final String DATABASE_NAME = "Users.db";
+
+            public DatabaseHandlerUser(Context context) {
+                super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            }
+
+            @Override
+            public void onCreate(SQLiteDatabase db) {
+                String CREATE_USERS_TABLE = "CREATE TABLE " + LogActivity.DBContract.UserEntry.TABLE_NAME + "("
+                        + LogActivity.DBContract.UserEntry.COLUMN_NAME_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        LogActivity.DBContract.UserEntry.COLUMN_NAME_LOGIN + " TEXT, " + LogActivity.DBContract.UserEntry.COLUMN_NAME_PASS + " TEXT" + ")";
+                Log.v("log", CREATE_USERS_TABLE);
+                db.execSQL(CREATE_USERS_TABLE);
+
+                String CREATE_CATS_TABLE = "CREATE TABLE "
+                        + LogActivity.DBContract.CatEntry.TABLE_NAME + "("
+                        + LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT_KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + LogActivity.DBContract.CatEntry.COLUMN_NAME_CAT + " TEXT" + ")";
+                db.execSQL(CREATE_CATS_TABLE);
+            }
+
+
+            @Override
+            public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                db.execSQL("DROP TABLE IF EXISTS " + LogActivity.DBContract.UserEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + LogActivity.DBContract.CatEntry.TABLE_NAME);
+                onCreate(db);
+            }
+
+//        public boolean sendUser(User user) {
+//            SQLiteDatabase db = this.getWritableDatabase();
+//            String check = user.getLogin();
+//            String check1 = user.getPass();
+//            String query = "select * from USERS where LOGIN like " + '"' + check + '"' + "and PASS like " + '"' + check1 + '"';
+//            Cursor cur = db.rawQuery(query, null);
+//            String count = String.valueOf(cur.getCount());
+//            if (count.equals("0") || count.equals("-1")) return false;
+//            cur.close();
+//
+//            //
+//            if (ponCheckBox.isChecked()) {
+//                SavePreferences();
+//            } else {
+//                SharedPreferences.Editor editor = mSettings.edit();
+//                editor.putString(APP_PREFERENCES_LOG, "");
+//                editor.apply();
+//            }
+//
+//            db.close();
+//            return true;
+//        }
+
+            public boolean checkUser(String userLogin) {
+                SQLiteDatabase db = this.getWritableDatabase();
+                String selectQuery = "SELECT  * FROM " + LogActivity.DBContract.UserEntry.TABLE_NAME + " WHERE login = '" + userLogin + "'";
+                Cursor cursor = db.rawQuery(selectQuery, null);
+                if (cursor.moveToFirst())
+                    return true;
+                else
+                    return false;
+            }
+
+            public void addUser(User user) {
+                SQLiteDatabase db = this.getWritableDatabase();
+
+                ContentValues values = new ContentValues();
+                values.put(LogActivity.DBContract.UserEntry.COLUMN_NAME_LOGIN, user.getLogin());
+                values.put(LogActivity.DBContract.UserEntry.COLUMN_NAME_PASS, user.getPass());
+
+                db.insert(LogActivity.DBContract.UserEntry.TABLE_NAME, null, values);
+                db.close();
+            }
+
+            public void delUser(String userLogin) {
+                SQLiteDatabase db = this.getWritableDatabase();
+
+                String[] delString = new String[]{userLogin};
+                db.delete(LogActivity.DBContract.UserEntry.TABLE_NAME, LogActivity.DBContract.UserEntry.COLUMN_NAME_LOGIN + "=?", delString);
+                db.close();
+            }
+
+            public void changePass(String user) {
+                SQLiteDatabase db = this.getWritableDatabase();
+
+                String password2 = newPassInput.getText().toString();
+                String query1 = "UPDATE USERS SET PASS = " + '"' + password2 + '"' + " WHERE LOGIN = " + '"' + user + '"';
+                db.execSQL(query1);
+                db.close();
+            }
+
+            public void sendUser(String user, String password) {
+                SQLiteDatabase db = this.getWritableDatabase();
+
+                if (ponCheckBox.isChecked()) {
+                    SavePreferences();
+                } else {
+                    SharedPreferences.Editor editor = mSettings.edit();
+                    editor.putString(APP_PREFERENCES_LOG, "");
+                    editor.apply();
+                }
+                db.close();
+            }
+        }
+    }
     public static final class DBContract {
 
         private DBContract() {
@@ -335,9 +462,6 @@ public class LogActivity extends Activity {
         String user = newLoginInput.getText().toString();
         String password1 = regFirstPassInput.getText().toString();
         String password2 = regSecondPassInput.getText().toString();
-
-
-
 
         if (user.isEmpty() || password1.isEmpty() || password2.isEmpty()) {
             Toast.makeText(this, "You did not enter a username or password", Toast.LENGTH_SHORT).show();

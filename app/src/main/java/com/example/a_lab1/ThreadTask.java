@@ -3,18 +3,14 @@ package com.example.a_lab1;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 
 public class ThreadTask {
     Handler targetHandler;
+    LogActivity.DB.DatabaseHandlerUser dbUser;
     final Message message = Message.obtain();
-    static LogActivity.DatabaseHandlerUser dbUser;
-    ListActivity.DatabaseHandlerCat dbCat;
-
-    static final Looper looper = Looper.getMainLooper();
+//    LogActivity.DatabaseHandlerUser dbUser;
 
     ThreadTask(Handler main_handler) {
         this.targetHandler = main_handler;
