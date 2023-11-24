@@ -8,11 +8,13 @@ import android.os.Message;
 
 public class ThreadTask {
     Handler targetHandler;
-    LogActivity.DB.DatabaseHandlerUser dbUser;
+    LogActivity.DatabaseHandlerUser dbUser;
+
     final Message message = Message.obtain();
 //    LogActivity.DatabaseHandlerUser dbUser;
 
-    ThreadTask(Handler main_handler) {
+    ThreadTask(Handler main_handler, LogActivity.DatabaseHandlerUser dbUser1) {
+        dbUser = dbUser1;
         this.targetHandler = main_handler;
     }
 
@@ -54,7 +56,7 @@ public class ThreadTask {
                     user.setLogin(login);
                     user.setPass(password);
                     dbUser.addUser(user);
-                    message.obj = TRUE;
+                    message.obj = login;
                 }
                 targetHandler.sendMessage(message);
 
